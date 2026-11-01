@@ -24,6 +24,20 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>br.com.genosha.metacore.cli.MetacoreCli</mainClass>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
@@ -41,6 +55,132 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!--
+      Executável com runtime próprio (ADR 0011): mvn -Pdist package -pl metacore-cli -am
+      Resultado em target/dist/metacore (bin/metacore). Exige o JDK 25 com jpackage.
+    -->
+    <profile>
+      <id>dist</id>
+      <properties>
+        <!-- O jpackage só aceita versões numéricas. -->
+        <dist.version>0.1.0</dist.version>
+        <!-- Calculado com jdeps; java.xml (XMP) e jdk.charsets (textos EXIF) entram explicitamente. -->
+        <dist.modules>java.base,java.desktop,java.logging,java.naming,java.sql,java.xml,jdk.charsets</dist.modules>
+        <dist.input>${project.build.directory}/jpackage-input</dist.input>
+        <dist.output>${project.build.directory}/dist</dist.output>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>clean-dist</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                  <filesets>
+                    <fileset>
+                      <directory>${dist.input}</directory>
+                    </fileset>
+                    <fileset>
+                      <directory>${dist.output}</directory>
+                    </fileset>
+                  </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-runtime-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeScope>runtime</includeScope>
+                  <outputDirectory>${dist.input}/lib</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-main-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${dist.input}</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>${project.build.finalName}.jar</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${exec-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>jpackage</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${java.home}/bin/jpackage</executable>
+                  <arguments>
+                    <argument>--type</argument>
+                    <argument>app-image</argument>
+                    <argument>--name</argument>
+                    <argument>metacore</argument>
+                    <argument>--app-version</argument>
+                    <argument>${dist.version}</argument>
+                    <argument>--vendor</argument>
+                    <argument>Genosha</argument>
+                    <argument>--input</argument>
+                    <argument>${dist.input}</argument>
+                    <argument>--main-jar</argument>
+                    <argument>${project.build.finalName}.jar</argument>
+                    <argument>--main-class</argument>
+                    <argument>br.com.genosha.metacore.cli.MetacoreCli</argument>
+                    <argument>--add-modules</argument>
+                    <argument>${dist.modules}</argument>
+                    <argument>--jlink-options</argument>
+                    <argument>--strip-debug --no-header-files --no-man-pages --strip-native-commands --compress=zip-6</argument>
+                    <argument>--dest</argument>
+                    <argument>${dist.output}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -70,6 +210,14 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <!-- Geradores de fixtures do módulo de imagem. -->
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

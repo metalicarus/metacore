@@ -4,9 +4,9 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** pré-alfa. O core (Fase 2) e o suporte a JPEG (Fase 3)
-> estão prontos; PNG, PDF e a CLI ainda não. O plano completo está em
-> [docs/blueprint.md](docs/blueprint.md).
+> **Estado:** pré-alfa. O core (Fase 2), o suporte a JPEG (Fase 3) e a
+> CLI (Fase 4) estão prontos; PNG e PDF ainda não. O plano completo está
+> em [docs/blueprint.md](docs/blueprint.md).
 
 ## Uso
 
@@ -20,6 +20,29 @@ result.find(MetadataKeys.IMAGE_WIDTH).ifPresent(m -> System.out.println(m.value(
 `MetadataAnalyzer` é imutável e thread-safe. Exceções só aparecem quando
 a análise não pode começar (arquivo inexistente ou acima do limite); o
 resto vira `status` e `warnings` no resultado.
+
+## CLI
+
+```bash
+metacore inspect foto.jpg
+metacore inspect --verbose foto.jpg
+metacore inspect --output json foto.jpg outra.jpg | jq .
+metacore identify *.jpg
+```
+
+A saída JSON tem uma linha por arquivo e segue o contrato do
+[ADR 0011](docs/adr/0011-cli-e-contrato-json.md). Códigos de saída: 0
+quando tudo foi analisado, 1 quando algum arquivo falhou, 2 para uso
+inválido e 3 com `--strict` quando algum arquivo não terminou em
+`SUCCESS`. A saída pode conter dados pessoais dos arquivos (GPS, nomes,
+números de série).
+
+Para gerar o executável com runtime próprio (sem exigir Java instalado):
+
+```bash
+mvn -Pdist package -pl metacore-cli -am -DskipTests
+metacore-cli/target/dist/metacore/bin/metacore --help
+```
 
 ## Módulos
 

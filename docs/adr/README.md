@@ -17,9 +17,10 @@ apontam um para o outro.
 | [0008](0008-cancelamento-cooperativo.md) | Cancelamento cooperativo | Aceito |
 | [0009](0009-modulo-testkit.md) | Módulo testkit | Aceito |
 | [0010](0010-parser-jpeg.md) | Parser JPEG | Aceito |
+| [0011](0011-cli-e-contrato-json.md) | CLI e contrato JSON | Aceito |
 
-ADRs ainda previstos (blueprint, apêndice A): relação com o Apache Tika
-(resultado da Fase 0) e contrato JSON.
+ADR ainda previsto (blueprint, apêndice A): relação com o Apache Tika
+(resultado da Fase 0).
 
 ## Modelo
 

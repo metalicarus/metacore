@@ -7,6 +7,12 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- CLI (Fase 4): comandos `identify` e `inspect`, saída em texto e em
+  JSON (NDJSON, `schemaVersion` 1), opções `--file`, `--max-file-size`,
+  `--show-path`, `--strict`, `--verbose`, `--quiet` e
+  `--include-binary`, códigos de saída 0 a 3 e perfil `dist` que gera um
+  executável com runtime próprio via jpackage.
+- ADR 0011.
 - Suporte a JPEG (Fase 3) no `metacore-format-image`: detector,
   parser com EXIF, GPS, XMP e demais segmentos do metadata-extractor,
   leitura tolerante a arquivos truncados, chaves normalizadas com

@@ -1,0 +1,12 @@
+<configuration>
+  <!-- Logs vão sempre para stderr: a saída padrão é reservada para o resultado (texto ou JSON). -->
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>metacore: %level %logger{20}: %msg%n</pattern>
+    </encoder>
+  </appender>
+  <root level="WARN">
+    <appender-ref ref="STDERR" />
+  </root>
+</configuration>
