@@ -28,5 +28,16 @@
       <groupId>com.drewnoakes</groupId>
       <artifactId>metadata-extractor</artifactId>
     </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-testkit</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.code-intelligence</groupId>
+      <artifactId>jazzer-junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

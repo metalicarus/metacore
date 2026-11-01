@@ -12,3 +12,6 @@ target/
 
 # Sistema
 .DS_Store
+
+# Corpus gerado pelo Jazzer em modo de fuzzing
+.cifuzz-corpus/

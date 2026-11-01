@@ -7,6 +7,13 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- Suporte a JPEG (Fase 3) no `metacore-format-image`: detector,
+  parser com EXIF, GPS, XMP e demais segmentos do metadata-extractor,
+  leitura tolerante a arquivos truncados, chaves normalizadas com
+  precedência, fixtures geradas por código, golden files, testes de XXE,
+  testes de robustez e alvo de fuzzing com Jazzer.
+- `docs/keys.md` com o vocabulário de chaves e a precedência do JPEG.
+- ADR 0010.
 - Contratos do core (Fase 2): `MetadataAnalyzer` com `analyze` e
   `identify`, `MetadataResult`, `AnalysisLimits`, formatos com
   hierarquia (`FileFormat`, `FormatRegistry`), detecção com resolução de

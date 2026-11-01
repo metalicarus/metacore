@@ -16,6 +16,7 @@ apontam um para o outro.
 | [0007](0007-inputsource-e-spool.md) | InputSource e spool de streams | Aceito |
 | [0008](0008-cancelamento-cooperativo.md) | Cancelamento cooperativo | Aceito |
 | [0009](0009-modulo-testkit.md) | Módulo testkit | Aceito |
+| [0010](0010-parser-jpeg.md) | Parser JPEG | Aceito |
 
 ADRs ainda previstos (blueprint, apêndice A): relação com o Apache Tika
 (resultado da Fase 0) e contrato JSON.

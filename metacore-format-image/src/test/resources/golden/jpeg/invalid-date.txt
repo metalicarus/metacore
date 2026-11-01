@@ -1,0 +1,21 @@
+status: SUCCESS
+format: jpeg
+metadata:
+    - | JPEG | Compression Type | INTEGER | 0
+  * image.bit_depth | JPEG | Data Precision | INTEGER | 8
+  * image.height | JPEG | Image Height | INTEGER | 48
+  * image.width | JPEG | Image Width | INTEGER | 64
+    - | JPEG | Number of Components | INTEGER | 3
+    - | JPEG | Component 1 | TEXT | Quantization table 0, Sampling factors 2 horiz/2 vert
+    - | JPEG | Component 2 | TEXT | Quantization table 1, Sampling factors 1 horiz/1 vert
+    - | JPEG | Component 3 | TEXT | Quantization table 1, Sampling factors 1 horiz/1 vert
+    - | JFIF | Version | INTEGER | 258
+    - | JFIF | Resolution Units | INTEGER | 0
+    - | JFIF | X Resolution | INTEGER | 1
+    - | JFIF | Y Resolution | INTEGER | 1
+    - | JFIF | Thumbnail Width Pixels | INTEGER | 0
+    - | JFIF | Thumbnail Height Pixels | INTEGER | 0
+    - | EXIF:SubIFD | Date/Time Original | TEXT | 0000:00:00 00:00:00
+    - | Huffman | Number of Tables | INTEGER | 4
+warnings:
+  VALUE_CONVERSION_FAILED | EXIF:SubIFD/Date/Time Original | Could not convert 'Date/Time Original' to 'image.datetime_original'; kept as a raw field
