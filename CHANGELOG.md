@@ -7,6 +7,15 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- Contratos do core (Fase 2): `MetadataAnalyzer` com `analyze` e
+  `identify`, `MetadataResult`, `AnalysisLimits`, formatos com
+  hierarquia (`FileFormat`, `FormatRegistry`), detecção com resolução de
+  conflitos, valores tipados (`MetadataValue`), avisos com códigos
+  estáveis, `InputSource` com spool de streams, cancelamento cooperativo
+  e SPI (`FormatDetector`, `MetadataParser`, `MetadataProvider`) com
+  descoberta por `ServiceLoader`.
+- Módulo `metacore-testkit` com a suíte de contrato para parsers.
+- ADRs 0004 a 0009.
 - Estrutura Maven multi-módulo: `metacore-bom`, `metacore-core`,
   `metacore-format-image`, `metacore-format-pdf`, `metacore-cli` e
   `metacore-examples`.

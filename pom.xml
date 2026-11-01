@@ -24,6 +24,7 @@
   <modules>
     <module>metacore-bom</module>
     <module>metacore-core</module>
+    <module>metacore-testkit</module>
     <module>metacore-format-image</module>
     <module>metacore-format-pdf</module>
     <module>metacore-cli</module>

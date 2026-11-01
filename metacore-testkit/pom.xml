@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>metacore-testkit</artifactId>
+  <name>MetaCore Testkit</name>
+  <description>Suíte de testes de contrato para parsers do MetaCore.</description>
+
+  <properties>
+    <module.name>br.com.genosha.metacore.testkit</module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Escopo compile: a suíte é usada nos testes de quem depende do testkit. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -10,11 +10,15 @@ apontam um para o outro.
 | [0001](0001-baseline-java.md) | Baseline do Java | Aceito |
 | [0002](0002-coordenadas-maven.md) | Coordenadas Maven e prefixo de pacotes | Aceito |
 | [0003](0003-descoberta-de-provedores.md) | Descoberta de provedores e JPMS | Aceito |
+| [0004](0004-deteccao-e-resolucao.md) | Detecção e resolução de conflitos | Aceito |
+| [0005](0005-valores-tipados-e-precedencia.md) | Valores tipados, chaves com vários valores e precedência | Aceito |
+| [0006](0006-fronteira-excecao-resultado.md) | Fronteira entre exceção e resultado | Aceito |
+| [0007](0007-inputsource-e-spool.md) | InputSource e spool de streams | Aceito |
+| [0008](0008-cancelamento-cooperativo.md) | Cancelamento cooperativo | Aceito |
+| [0009](0009-modulo-testkit.md) | Módulo testkit | Aceito |
 
-ADRs previstos (blueprint, apêndice A): relação com o Apache Tika,
-modelo de valores tipados, chaves com vários valores e precedência,
-fronteira entre exceção e resultado, `InputSource` e spool, contrato
-JSON, cancelamento cooperativo.
+ADRs ainda previstos (blueprint, apêndice A): relação com o Apache Tika
+(resultado da Fase 0) e contrato JSON.
 
 ## Modelo
 
