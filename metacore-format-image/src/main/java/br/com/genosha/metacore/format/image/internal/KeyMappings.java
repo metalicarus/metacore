@@ -4,6 +4,7 @@ import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_BIT_DEPTH;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_CAMERA_EXPOSURE_TIME;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_CAMERA_MAKE;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_CAMERA_MODEL;
+import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_COLOR_TYPE;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_DATETIME_ORIGINAL;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_HEIGHT;
 import static br.com.genosha.metacore.metadata.MetadataKeys.IMAGE_ORIENTATION;
@@ -19,6 +20,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
+import com.drew.metadata.png.PngDirectory;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -65,6 +67,14 @@ final class KeyMappings {
                       IMAGE_DATETIME_ORIGINAL,
                       1,
                       Converters.exifDate(ExifDirectoryBase.TAG_TIME_ZONE_ORIGINAL))),
+          PngDirectory.class,
+          Map.of(
+              PngDirectory.TAG_IMAGE_WIDTH, new TagMapping(IMAGE_WIDTH, 1, Converters.INTEGER),
+              PngDirectory.TAG_IMAGE_HEIGHT, new TagMapping(IMAGE_HEIGHT, 1, Converters.INTEGER),
+              PngDirectory.TAG_BITS_PER_SAMPLE,
+                  new TagMapping(IMAGE_BIT_DEPTH, 1, Converters.INTEGER),
+              PngDirectory.TAG_COLOR_TYPE,
+                  new TagMapping(IMAGE_COLOR_TYPE, 1, Converters.DESCRIPTION)),
           ExifThumbnailDirectory.class,
           Map.of(
               ExifDirectoryBase.TAG_IMAGE_WIDTH,

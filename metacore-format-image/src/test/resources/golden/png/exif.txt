@@ -1,0 +1,20 @@
+status: SUCCESS
+format: png
+metadata:
+  * image.width | PNG:IHDR | Image Width | INTEGER | 64
+  * image.height | PNG:IHDR | Image Height | INTEGER | 48
+  * image.bit_depth | PNG:IHDR | Bits Per Sample | INTEGER | 8
+  * image.color_type | PNG:IHDR | Color Type | TEXT | True Color
+    - | PNG:IHDR | Compression Type | INTEGER | 0
+    - | PNG:IHDR | Filter Method | INTEGER | 0
+    - | PNG:IHDR | Interlace Method | INTEGER | 0
+  * image.camera.make | EXIF:IFD0 | Make | TEXT | Genosha
+  * image.camera.model | EXIF:IFD0 | Model | TEXT | MC-1
+  * image.orientation | EXIF:IFD0 | Orientation | INTEGER | 6
+  * image.camera.exposure_time | EXIF:SubIFD | Exposure Time | RATIONAL | 1/125
+    - | EXIF:SubIFD | Exif Version | BINARY | binary(4)
+  * image.datetime_original | EXIF:SubIFD | Date/Time Original | OFFSET_DATE_TIME | 2026-07-14T16:32:05-03:00
+    - | EXIF:SubIFD | Time Zone Original | TEXT | -03:00
+    image.width | EXIF:SubIFD | Exif Image Width | INTEGER | 64
+    image.height | EXIF:SubIFD | Exif Image Height | INTEGER | 48
+warnings:

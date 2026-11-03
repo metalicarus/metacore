@@ -7,6 +7,19 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- Suporte a PNG (Fase 5): IHDR, texto (`tEXt`, `zTXt`, `iTXt`), EXIF
+  (`eXIf`), XMP e demais chunks, com leitura tolerante a truncamento e
+  limite de descompactação para texto compactado.
+- Suporte a PDF (Fase 5) no `metacore-format-pdf`: versão, páginas,
+  criptografia, dicionário Info e XMP, com datas tipadas e precedência
+  Info/XMP conforme a versão do PDF.
+- `ResultRenderer` e `GoldenFiles` no `metacore-testkit`.
+- ADR 0012.
+
+### Alterado
+
+- Datas no JSON e no texto da CLI sempre com segundos
+  (`2026-08-01T09:00:00Z`, e não `2026-08-01T09:00Z`).
 - CLI (Fase 4): comandos `identify` e `inspect`, saída em texto e em
   JSON (NDJSON, `schemaVersion` 1), opções `--file`, `--max-file-size`,
   `--show-path`, `--strict`, `--verbose`, `--quiet` e

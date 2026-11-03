@@ -1,0 +1,12 @@
+status: SUCCESS
+format: pdf
+metadata:
+  * document.format_version | PDF | Version | TEXT | 2.0
+  * document.page_count | PDF | Pages/Count | INTEGER | 1
+    document.title | PDF:Info | Title | TEXT | Info Title
+  * document.author | XMP | dc:creator[1] | TEXT | Genosha
+  * document.title | XMP | dc:title[1] | TEXT | XMP Title
+  * document.producer | XMP | pdf:Producer | TEXT | PDFBox
+  * document.created | XMP | xmp:CreateDate | OFFSET_DATE_TIME | 2026-07-14T16:32:05-03:00
+warnings:
+  METADATA_CONFLICT | document.title | Sources disagree on the value of 'document.title'

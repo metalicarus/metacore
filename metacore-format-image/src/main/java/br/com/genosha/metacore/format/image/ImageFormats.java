@@ -8,5 +8,7 @@ public final class ImageFormats {
   public static final FileFormat JPEG =
       FileFormat.of("jpeg", "image/jpeg", "JPEG", "jpg", "jpeg", "jpe", "jfif");
 
+  public static final FileFormat PNG = FileFormat.of("png", "image/png", "PNG", "png");
+
   private ImageFormats() {}
 }

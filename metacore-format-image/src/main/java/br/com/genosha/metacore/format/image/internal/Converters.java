@@ -34,6 +34,9 @@ final class Converters {
 
   static final TagConverter TEXT = (directory, tag) -> text(directory.getObject(tag));
 
+  /** Descrição legível do metadata-extractor, como {@code True Color with Alpha}. */
+  static final TagConverter DESCRIPTION = (directory, tag) -> text(directory.getDescription(tag));
+
   static final TagConverter RATIONAL =
       (directory, tag) ->
           directory.getObject(tag) instanceof Rational r ? RawValues.rational(r) : Optional.empty();

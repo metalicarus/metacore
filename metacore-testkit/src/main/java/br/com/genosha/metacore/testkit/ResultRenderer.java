@@ -1,4 +1,4 @@
-package br.com.genosha.metacore.format.image.fixtures;
+package br.com.genosha.metacore.testkit;
 
 import br.com.genosha.metacore.api.MetadataResult;
 import br.com.genosha.metacore.metadata.BinaryValue;
@@ -13,9 +13,10 @@ import br.com.genosha.metacore.metadata.OffsetDateTimeValue;
 import br.com.genosha.metacore.metadata.RationalValue;
 import br.com.genosha.metacore.metadata.TextValue;
 import br.com.genosha.metacore.metadata.Warning;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
-/** Representação textual estável de um resultado, usada nos golden files. */
+/** Representação textual estável e completa de um resultado, para golden files e diagnósticos. */
 public final class ResultRenderer {
 
   private ResultRenderer() {}
@@ -59,8 +60,8 @@ public final class ResultRenderer {
       case DecimalValue d -> d.value().toPlainString();
       case RationalValue r -> r.toString();
       case BooleanValue b -> Boolean.toString(b.value());
-      case LocalDateTimeValue l -> l.value().toString();
-      case OffsetDateTimeValue o -> o.value().toString();
+      case LocalDateTimeValue l -> DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(l.value());
+      case OffsetDateTimeValue o -> DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(o.value());
       case BinaryValue b -> "binary(" + b.size() + ")";
       case ListValue l ->
           l.values().stream()

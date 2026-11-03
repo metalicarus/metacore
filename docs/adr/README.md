@@ -18,6 +18,7 @@ apontam um para o outro.
 | [0009](0009-modulo-testkit.md) | Módulo testkit | Aceito |
 | [0010](0010-parser-jpeg.md) | Parser JPEG | Aceito |
 | [0011](0011-cli-e-contrato-json.md) | CLI e contrato JSON | Aceito |
+| [0012](0012-parsers-png-e-pdf.md) | Parsers PNG e PDF | Aceito |
 
 ADR ainda previsto (blueprint, apêndice A): relação com o Apache Tika
 (resultado da Fase 0).

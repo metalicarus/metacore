@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.UncheckedIOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -138,8 +139,10 @@ final class JsonRenderer {
         yield node;
       }
       case BooleanValue b -> NODES.booleanNode(b.value());
-      case LocalDateTimeValue l -> NODES.textNode(l.value().toString());
-      case OffsetDateTimeValue o -> NODES.textNode(o.value().toString());
+      case LocalDateTimeValue l ->
+          NODES.textNode(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(l.value()));
+      case OffsetDateTimeValue o ->
+          NODES.textNode(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(o.value()));
       case BinaryValue b -> {
         ObjectNode node = NODES.objectNode();
         node.put("size", b.size());

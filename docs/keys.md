@@ -60,7 +60,10 @@ informações já saem em `detection` e `file` no resultado.
 | `EXIF:IFD1` | EXIF, miniatura |
 | `EXIF:GPS` | EXIF, localização |
 | `EXIF:Interop` | EXIF, interoperabilidade |
-| `XMP` | Propriedades XMP; `rawName` é o caminho, por exemplo `tiff:Make` |
+| `PNG:IHDR`, `PNG:tEXt`, `PNG:zTXt`, `PNG:iTXt`, `PNG:tIME`... | Chunks do PNG |
+| `PDF` | Estrutura do PDF: versão, páginas, criptografia |
+| `PDF:Info` | Dicionário Info do PDF |
+| `XMP` | Propriedades XMP; `rawName` é o caminho, por exemplo `tiff:Make` ou `dc:title[1]` |
 | outros | Nome do diretório no metadata-extractor (`ICC Profile`, `IPTC`, `Huffman`...) |
 
 ## Precedência por formato
@@ -78,6 +81,39 @@ informações já saem em `detection` e `file` no resultado.
 | `image.thumbnail.width` / `height` | `EXIF:IFD1` Image Width/Height | | | |
 | `location.latitude` / `longitude` | `EXIF:GPS`, a partir de GPS Latitude/Longitude e Ref | | | |
 
-O mapeamento está em
-`metacore-format-image/.../internal/KeyMappings.java`; esta tabela e o
+### PNG
+
+| Chave | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|
+| `image.width` / `image.height` | `PNG:IHDR` Image Width/Height | `EXIF:SubIFD` (chunk `eXIf`) | `EXIF:IFD0` | `XMP` exif:PixelXDimension/PixelYDimension |
+| `image.bit_depth` | `PNG:IHDR` Bits Per Sample | | | |
+| `image.color_type` | `PNG:IHDR` Color Type (descrição, por exemplo `True Color`) | | | |
+| demais chaves de imagem | como no JPEG, vindas do `eXIf` e do XMP (`iTXt` `XML:com.adobe.xmp`) | | | |
+
+Os chunks de texto (`tEXt`, `zTXt`, `iTXt`) viram um campo bruto por
+palavra-chave, no namespace do chunk (`PNG:tEXt`, por exemplo), sem
+chave normalizada.
+
+O mapeamento de JPEG e PNG está em
+`metacore-format-image/.../internal/KeyMappings.java`; estas tabelas e o
 código precisam mudar juntos.
+
+### PDF
+
+Até a versão 1.7 o dicionário Info vale mais que o XMP; no PDF 2.0, que
+deprecia o Info, a ordem se inverte.
+
+| Chave | PDF ≤ 1.7: 1 | PDF ≤ 1.7: 2 |
+|---|---|---|
+| `document.title` | `PDF:Info` Title | `XMP` dc:title[1] |
+| `document.author` | `PDF:Info` Author | `XMP` dc:creator[1] |
+| `document.subject` | `PDF:Info` Subject | `XMP` dc:description[1] |
+| `document.keywords` | `PDF:Info` Keywords (separadas por `,` ou `;`) | `XMP` pdf:Keywords |
+| `document.creator` | `PDF:Info` Creator | `XMP` xmp:CreatorTool |
+| `document.producer` | `PDF:Info` Producer | `XMP` pdf:Producer |
+| `document.created` | `PDF:Info` CreationDate | `XMP` xmp:CreateDate |
+| `document.modified` | `PDF:Info` ModDate | `XMP` xmp:ModifyDate |
+| `document.page_count` | `PDF` Pages/Count | |
+| `document.format_version` | `PDF` Version | |
+
+O mapeamento está em `metacore-format-pdf/.../PdfParser.java`.

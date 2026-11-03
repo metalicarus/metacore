@@ -6,6 +6,12 @@
       <pattern>metacore: %level %logger{20}: %msg%n</pattern>
     </encoder>
   </appender>
+  <!--
+    O PDFBox registra como WARN/ERROR cada reparo que faz em arquivos malformados. Os problemas
+    que importam já aparecem como avisos no resultado; aqui eles só poluiriam o stderr.
+  -->
+  <logger name="org.apache.pdfbox" level="OFF" />
+  <logger name="org.apache.fontbox" level="OFF" />
   <root level="WARN">
     <appender-ref ref="STDERR" />
   </root>

@@ -48,6 +48,7 @@
     <picocli.version>4.7.7</picocli.version>
     <metadata-extractor.version>2.19.0</metadata-extractor.version>
     <pdfbox.version>3.0.5</pdfbox.version>
+    <xmpcore.version>6.1.11</xmpcore.version>
 
     <!-- Testes -->
     <junit.version>5.13.4</junit.version>
@@ -101,6 +102,11 @@
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>pdfbox</artifactId>
         <version>${pdfbox.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.adobe.xmp</groupId>
+        <artifactId>xmpcore</artifactId>
+        <version>${xmpcore.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>

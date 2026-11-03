@@ -10,6 +10,7 @@ import br.com.genosha.metacore.metadata.WarningCode;
 import br.com.genosha.metacore.spi.MetadataEntry;
 import br.com.genosha.metacore.spi.ParseContext;
 import com.drew.lang.GeoLocation;
+import com.drew.lang.KeyValuePair;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -17,6 +18,7 @@ import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,8 +59,8 @@ public final class DrewMetadataEmitter {
 
   /**
    * Namespace estável a partir do nome do diretório: {@code Exif SubIFD} vira {@code EXIF:SubIFD},
-   * {@code Exif Thumbnail} vira {@code EXIF:IFD1} e {@code GPS} vira {@code EXIF:GPS}. Os demais
-   * mantêm o nome do metadata-extractor.
+   * {@code Exif Thumbnail} vira {@code EXIF:IFD1}, {@code GPS} vira {@code EXIF:GPS} e {@code
+   * PNG-tEXt} vira {@code PNG:tEXt}. Os demais mantêm o nome do metadata-extractor.
    */
   static String namespace(Directory directory) {
     String name = directory.getName();
@@ -66,7 +68,12 @@ public final class DrewMetadataEmitter {
       case "Exif Thumbnail" -> "EXIF:IFD1";
       case "GPS" -> "EXIF:GPS";
       case "Interoperability" -> "EXIF:Interop";
-      default -> name.startsWith("Exif ") ? "EXIF:" + name.substring(5) : name;
+      default -> {
+        if (name.startsWith("Exif ")) {
+          yield "EXIF:" + name.substring(5);
+        }
+        yield name.startsWith("PNG-") ? "PNG:" + name.substring(4) : name;
+      }
     };
   }
 
@@ -74,6 +81,17 @@ public final class DrewMetadataEmitter {
       Directory directory, Tag tag, String namespace, TagMapping mapping, ParseContext context) {
     int type = tag.getTagType();
     String name = tag.getTagName();
+    if (directory.getObject(type) instanceof List<?> list
+        && !list.isEmpty()
+        && list.stream().allMatch(KeyValuePair.class::isInstance)) {
+      // Texto PNG (tEXt, zTXt, iTXt): cada par vira um campo com a palavra-chave como nome.
+      for (Object item : list) {
+        KeyValuePair pair = (KeyValuePair) item;
+        String value = pair.getValue() == null ? "" : pair.getValue().toString();
+        context.emit(MetadataEntry.raw(namespace, pair.getKey(), MetadataValue.of(value)));
+      }
+      return;
+    }
     if (mapping != null) {
       Optional<MetadataValue> value = mapping.converter().convert(directory, type);
       if (value.isPresent()) {

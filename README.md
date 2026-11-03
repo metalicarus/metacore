@@ -4,9 +4,10 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** pré-alfa. O core (Fase 2), o suporte a JPEG (Fase 3) e a
-> CLI (Fase 4) estão prontos; PNG e PDF ainda não. O plano completo está
-> em [docs/blueprint.md](docs/blueprint.md).
+> **Estado:** pré-alfa. Core, CLI e os três formatos do MVP (JPEG, PNG
+> e PDF) estão prontos (Fases 2 a 5); falta a Fase 6 (qualidade e
+> release 0.1). O plano completo está em
+> [docs/blueprint.md](docs/blueprint.md).
 
 ## Uso
 
@@ -80,7 +81,7 @@ Comandos úteis:
 |---|---|
 | `mvn spotless:apply` | Formata o código (google-java-format) |
 | `mvn -Psecurity verify` | Roda o OWASP Dependency-Check; defina `NVD_API_KEY` para acelerar |
-| `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s |
+| `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s (`PngFuzzTest` para PNG; `-pl metacore-format-pdf` e `PdfFuzzTest` para PDF) |
 
 O relatório de cobertura do JaCoCo fica em
 `<módulo>/target/site/jacoco/index.html`.

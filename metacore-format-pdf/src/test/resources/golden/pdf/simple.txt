@@ -1,0 +1,6 @@
+status: SUCCESS
+format: pdf
+metadata:
+  * document.format_version | PDF | Version | TEXT | 1.7
+  * document.page_count | PDF | Pages/Count | INTEGER | 1
+warnings:

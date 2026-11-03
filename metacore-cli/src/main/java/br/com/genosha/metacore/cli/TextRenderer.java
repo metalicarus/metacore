@@ -16,6 +16,7 @@ import br.com.genosha.metacore.metadata.RationalValue;
 import br.com.genosha.metacore.metadata.TextValue;
 import br.com.genosha.metacore.metadata.Warning;
 import java.io.PrintWriter;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -128,8 +129,8 @@ final class TextRenderer {
           case DecimalValue d -> d.value().toPlainString();
           case RationalValue r -> r.toString();
           case BooleanValue b -> Boolean.toString(b.value());
-          case LocalDateTimeValue l -> l.value().toString();
-          case OffsetDateTimeValue o -> o.value().toString();
+          case LocalDateTimeValue l -> DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(l.value());
+          case OffsetDateTimeValue o -> DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(o.value());
           case BinaryValue b -> "<binary, " + b.size() + " bytes>";
           case ListValue l ->
               l.values().stream().map(TextRenderer::value).collect(Collectors.joining(", "));

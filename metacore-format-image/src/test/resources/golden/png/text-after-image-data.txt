@@ -1,0 +1,12 @@
+status: SUCCESS
+format: png
+metadata:
+  * image.width | PNG:IHDR | Image Width | INTEGER | 64
+  * image.height | PNG:IHDR | Image Height | INTEGER | 48
+  * image.bit_depth | PNG:IHDR | Bits Per Sample | INTEGER | 8
+  * image.color_type | PNG:IHDR | Color Type | TEXT | True Color
+    - | PNG:IHDR | Compression Type | INTEGER | 0
+    - | PNG:IHDR | Filter Method | INTEGER | 0
+    - | PNG:IHDR | Interlace Method | INTEGER | 0
+    - | PNG:tEXt | Software | TEXT | MetaCore
+warnings:

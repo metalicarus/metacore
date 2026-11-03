@@ -28,5 +28,21 @@
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox</artifactId>
     </dependency>
+    <!-- Parser XMP da Adobe: recusa DOCTYPE, o que fecha a porta para XXE (ADR 0012). -->
+    <dependency>
+      <groupId>com.adobe.xmp</groupId>
+      <artifactId>xmpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-testkit</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.code-intelligence</groupId>
+      <artifactId>jazzer-junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

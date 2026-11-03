@@ -1,0 +1,15 @@
+status: SUCCESS
+format: pdf
+metadata:
+  * document.format_version | PDF | Version | TEXT | 1.7
+  * document.page_count | PDF | Pages/Count | INTEGER | 3
+  * document.author | PDF:Info | Author | TEXT | Genosha
+  * document.created | PDF:Info | CreationDate | OFFSET_DATE_TIME | 2026-07-14T16:32:05-03:00
+  * document.creator | PDF:Info | Creator | TEXT | MetaCore tests
+    - | PDF:Info | Department | TEXT | Engenharia
+  * document.keywords | PDF:Info | Keywords | LIST | [pdf, metadata, testes]
+  * document.modified | PDF:Info | ModDate | OFFSET_DATE_TIME | 2026-08-01T09:00:00Z
+  * document.producer | PDF:Info | Producer | TEXT | PDFBox
+  * document.subject | PDF:Info | Subject | TEXT | Metadados
+  * document.title | PDF:Info | Title | TEXT | Relatório anual
+warnings:

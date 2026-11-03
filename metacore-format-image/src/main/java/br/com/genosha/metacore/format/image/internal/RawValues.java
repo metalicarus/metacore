@@ -66,6 +66,7 @@ final class RawValues {
         yield list(items);
       }
       case Object[] array -> list(List.of(array));
+      case List<?> items -> list(items);
       default -> Optional.of(MetadataValue.of(raw.toString()));
     };
   }

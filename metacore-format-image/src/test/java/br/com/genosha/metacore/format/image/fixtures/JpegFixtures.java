@@ -132,6 +132,11 @@ public final class JpegFixtures {
     return java.util.Arrays.copyOf(content, length);
   }
 
+  /** TIFF do EXIF básico, sem o cabeçalho {@code Exif\0\0}; usado no chunk {@code eXIf} do PNG. */
+  static byte[] basicExifTiff() {
+    return TiffBuilder.build(basicIfd0(subIfd(true), null, null));
+  }
+
   private static Ifd subIfd(boolean withOffset) {
     Ifd sub =
         new Ifd()
@@ -168,7 +173,8 @@ public final class JpegFixtures {
     return segment(0xE1, concat(XMP_HEADER, packet.getBytes(StandardCharsets.UTF_8)));
   }
 
-  private static String xmpPacket(String doctype, String attributes, String elements) {
+  /** Pacote XMP com os namespaces tiff, exif e xmp declarados. */
+  static String xmpPacket(String doctype, String attributes, String elements) {
     return "<?xpacket begin=\"﻿\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n"
         + doctype
         + "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">\n"
