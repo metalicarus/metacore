@@ -51,8 +51,8 @@ Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
 - Proteção contra XXE no XMP e contra zip bomb no PNG, com testes.
 - Fixtures geradas por código, golden files, testes de robustez com
   mutações reproduzíveis e alvos de fuzzing com Jazzer (com corpus
-  inicial). Sem falhas em 10 min de JPEG (4,4 milhões de execuções) e
-  4 min de PNG (2,6 milhões); o PDF teve só a sessão de 60 s da Fase 5.
+  inicial). Sem falhas em 10 min de JPEG (4,4 milhões de execuções),
+  4 min de PNG (2,6 milhões) e 10 min de PDF (1,2 milhão).
 - Benchmarks JMH (`metacore-benchmarks`) e limites padrão calibrados a
   partir deles (`docs/performance.md`).
 - Dependências verificadas quanto a licença e vulnerabilidades

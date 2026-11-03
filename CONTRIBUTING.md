@@ -40,8 +40,11 @@
     -Dsurefire.failIfNoSpecifiedTests=false -Djazzer.max_duration=10m
   ```
 
-  Uma entrada que derrube o parser vira arquivo `crash-*` no módulo:
-  copie-a para o corpus como regressão antes de corrigir.
+  Uma entrada que derrube o parser vira um arquivo `crash-*` no próprio
+  diretório de entradas do alvo, e a build normal passa a rodá-la como
+  regressão. Interromper o fuzzing à força (Ctrl+C duplo, `kill`) também
+  pode deixar um `crash-*` que não é falha: confirme com `mvn verify`
+  antes de commitar e apague o arquivo se a regressão passar.
 - **Benchmarks**: `docs/performance.md` explica como rodar e guarda a
   referência. Mudanças em parsers ou limites devem ser medidas.
 

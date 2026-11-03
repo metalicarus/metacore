@@ -52,9 +52,10 @@ publicação.
     3.10.4.
 - Jazzer 0.30, que instrumenta classes do JDK 25. Com o corpus inicial
   gerado das fixtures, a cobertura do PNG em 10 s passou de 357 para 705
-  arestas. Sessões longas: JPEG 10 min (4,4 milhões de execuções) e PNG
-  4 min (2,6 milhões), sem falhas; a sessão longa do PDF fica para antes
-  da publicação (checklist em `docs/release.md`).
+  arestas, e a do PDF em 10 min chegou a 630 (contra 328 sem corpus).
+  Sessões longas, todas sem falhas: JPEG 10 min (4,4 milhões de
+  execuções), PNG 4 min (2,6 milhões, interrompida) e PDF 10 min
+  (1,2 milhão).
 - Licenças e vulnerabilidades conhecidas verificadas
   (`docs/dependencies.md`); `NOTICE` com os avisos das dependências
   Apache.
