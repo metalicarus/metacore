@@ -13,4 +13,10 @@ public record TextValue(String value) implements MetadataValue {
   public ValueType type() {
     return ValueType.TEXT;
   }
+
+  /** O próprio valor, como {@code Genosha}. */
+  @Override
+  public String toString() {
+    return value;
+  }
 }

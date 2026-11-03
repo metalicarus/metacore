@@ -7,4 +7,10 @@ public record IntegerValue(long value) implements MetadataValue {
   public ValueType type() {
     return ValueType.INTEGER;
   }
+
+  /** O próprio valor, como {@code 4000}. */
+  @Override
+  public String toString() {
+    return Long.toString(value);
+  }
 }

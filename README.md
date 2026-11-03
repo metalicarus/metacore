@@ -4,10 +4,42 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** pré-alfa. Core, CLI e os três formatos do MVP (JPEG, PNG
-> e PDF) estão prontos (Fases 2 a 5); falta a Fase 6 (qualidade e
-> release 0.1). O plano completo está em
+> **Estado:** versão 0.1.0 pronta para publicação, ainda não publicada
+> no Maven Central. Suporta JPEG, PNG e PDF. O plano completo está em
 > [docs/blueprint.md](docs/blueprint.md).
+
+## Instalação
+
+Depois da publicação no Maven Central:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-bom</artifactId>
+      <version>0.1.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <!-- Escolha os formatos; cada módulo traz o core junto. -->
+  <dependency>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-format-image</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-format-pdf</artifactId>
+  </dependency>
+</dependencies>
+```
+
+Requer Java 21 ou superior. Os módulos de formato são encontrados
+automaticamente por `ServiceLoader`.
 
 ## Uso
 
@@ -20,7 +52,9 @@ result.find(MetadataKeys.IMAGE_WIDTH).ifPresent(m -> System.out.println(m.value(
 
 `MetadataAnalyzer` é imutável e thread-safe. Exceções só aparecem quando
 a análise não pode começar (arquivo inexistente ou acima do limite); o
-resto vira `status` e `warnings` no resultado.
+resto vira `status` e `warnings` no resultado. Mais exemplos, inclusive
+como adicionar um formato próprio, em
+[metacore-examples](metacore-examples/src/main/java/br/com/genosha/metacore/examples).
 
 ## CLI
 
@@ -56,6 +90,7 @@ metacore-cli/target/dist/metacore/bin/metacore --help
 | `metacore-format-pdf` | PDF (Apache PDFBox) | 21+ |
 | `metacore-cli` | Ferramenta `metacore` (picocli) | 25 |
 | `metacore-examples` | Exemplos de integração; não é publicado | 21+ |
+| `metacore-benchmarks` | Benchmarks JMH; não é publicado | 21+ |
 
 Coordenadas Maven: `groupId` `br.com.genosha`. Pacotes:
 `br.com.genosha.metacore`.
@@ -83,13 +118,19 @@ Comandos úteis:
 | `mvn -Psecurity verify` | Roda o OWASP Dependency-Check; defina `NVD_API_KEY` para acelerar |
 | `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s (`PngFuzzTest` para PNG; `-pl metacore-format-pdf` e `PdfFuzzTest` para PDF) |
 
+| `java -jar metacore-benchmarks/target/benchmarks.jar -prof gc` | Benchmarks (depois de `mvn package -pl metacore-benchmarks -am -DskipTests`) |
+
 O relatório de cobertura do JaCoCo fica em
 `<módulo>/target/site/jacoco/index.html`.
 
 ## Documentação
 
 - [Blueprint e roadmap](docs/blueprint.md)
+- [Formatos suportados e limitações](docs/formats.md)
 - [Chaves normalizadas](docs/keys.md)
+- [Desempenho e limites padrão](docs/performance.md)
+- [Dependências e licenças](docs/dependencies.md)
+- [Como publicar um release](docs/release.md)
 - [Registros de decisão (ADRs)](docs/adr/README.md)
 - [Como contribuir](CONTRIBUTING.md)
 - [Segurança](SECURITY.md)

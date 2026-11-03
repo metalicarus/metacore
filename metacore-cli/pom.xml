@@ -18,6 +18,8 @@
     <module.name>br.com.genosha.metacore.cli</module.name>
     <!-- A CLI é distribuída com runtime próprio (ADR 0001). -->
     <maven.compiler.release>25</maven.compiler.release>
+    <!-- Opções do jpackage específicas da plataforma; vazio no Linux. -->
+    <dist.platform.options />
   </properties>
 
   <build>
@@ -151,34 +153,41 @@
                 </goals>
                 <configuration>
                   <executable>${java.home}/bin/jpackage</executable>
-                  <arguments>
-                    <argument>--type</argument>
-                    <argument>app-image</argument>
-                    <argument>--name</argument>
-                    <argument>metacore</argument>
-                    <argument>--app-version</argument>
-                    <argument>${dist.version}</argument>
-                    <argument>--vendor</argument>
-                    <argument>Genosha</argument>
-                    <argument>--input</argument>
-                    <argument>${dist.input}</argument>
-                    <argument>--main-jar</argument>
-                    <argument>${project.build.finalName}.jar</argument>
-                    <argument>--main-class</argument>
-                    <argument>br.com.genosha.metacore.cli.MetacoreCli</argument>
-                    <argument>--add-modules</argument>
-                    <argument>${dist.modules}</argument>
-                    <argument>--jlink-options</argument>
-                    <argument>--strip-debug --no-header-files --no-man-pages --strip-native-commands --compress=zip-6</argument>
-                    <argument>--dest</argument>
-                    <argument>${dist.output}</argument>
-                  </arguments>
+                  <!-- commandlineArgs aceita aspas, inclusive com caminhos do Windows. -->
+                  <commandlineArgs>--type app-image --name metacore --app-version ${dist.version} --vendor Genosha --input "${dist.input}" --main-jar ${project.build.finalName}.jar --main-class br.com.genosha.metacore.cli.MetacoreCli --add-modules ${dist.modules} --jlink-options "--strip-debug --no-header-files --no-man-pages --strip-native-commands --compress=zip-6" --app-content "${project.basedir}/../LICENSE,${project.basedir}/../NOTICE" --dest "${dist.output}" ${dist.platform.options}</commandlineArgs>
                 </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <!-- No Windows, o launcher precisa de console para uma ferramenta de linha de comando. -->
+    <profile>
+      <id>dist-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <dist.platform.options>--win-console</dist.platform.options>
+      </properties>
+    </profile>
+    <!--
+      No macOS, o jpackage recusa versões que começam com zero. O número vale só para o
+      Info.plist do pacote; a CLI informa a própria versão a partir do JAR.
+    -->
+    <profile>
+      <id>dist-mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <dist.version>1.0.0</dist.version>
+      </properties>
     </profile>
   </profiles>
 

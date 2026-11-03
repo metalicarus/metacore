@@ -26,6 +26,25 @@
   sempre que possível. Fixtures de terceiros só com origem e licença
   registradas.
 
+## Testes que vale conhecer
+
+- **Golden files** (`src/test/resources/golden`): guardam a saída completa
+  de cada fixture. Depois de uma mudança intencional, regenere com
+  `mvn test -Dmetacore.updateGolden=true` e revise o diff.
+- **Fuzzing**: cada parser tem um alvo do Jazzer com corpus inicial em
+  `src/test/resources/.../<Alvo>FuzzTestInputs`. Na build normal roda só a
+  regressão; para fuzzing de verdade:
+
+  ```bash
+  JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest \
+    -Dsurefire.failIfNoSpecifiedTests=false -Djazzer.max_duration=10m
+  ```
+
+  Uma entrada que derrube o parser vira arquivo `crash-*` no módulo:
+  copie-a para o corpus como regressão antes de corrigir.
+- **Benchmarks**: `docs/performance.md` explica como rodar e guarda a
+  referência. Mudanças em parsers ou limites devem ser medidas.
+
 ## Mensagens de commit
 
 Frase curta no imperativo explicando a mudança, por exemplo

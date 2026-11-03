@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Limites de recursos de uma análise. Os valores padrão são provisórios e serão calibrados antes do
- * release 0.1.
+ * Limites de recursos de uma análise. Os valores padrão e as medições que os embasam estão em
+ * {@code docs/performance.md}.
  *
  * @param maxFileSize tamanho máximo aceito, em bytes
  * @param maxDetectionBytes bytes lidos do início para detecção
@@ -54,7 +54,7 @@ public record AnalysisLimits(
   public static AnalysisLimits defaults() {
     return new AnalysisLimits(
         512L * 1024 * 1024,
-        64 * 1024,
+        8 * 1024,
         8 * 1024 * 1024,
         10_000,
         64 * 1024,

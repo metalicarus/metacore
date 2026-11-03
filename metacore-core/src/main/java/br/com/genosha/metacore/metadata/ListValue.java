@@ -13,4 +13,10 @@ public record ListValue(List<MetadataValue> values) implements MetadataValue {
   public ValueType type() {
     return ValueType.LIST;
   }
+
+  /** O próprio valor, como {@code [pdf, metadata]}. */
+  @Override
+  public String toString() {
+    return values.toString();
+  }
 }

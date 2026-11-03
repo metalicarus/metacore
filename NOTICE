@@ -1,0 +1,25 @@
+MetaCore
+Copyright 2026 Genosha
+
+Este produto é distribuído sob a Apache License, Version 2.0 (arquivo
+LICENSE).
+
+O executável da CLI (metacore-cli) inclui bibliotecas de terceiros, cada
+uma com seus próprios avisos de licença dentro do respectivo JAR
+(META-INF/LICENSE e META-INF/NOTICE), e um runtime Java (OpenJDK) com
+os avisos em lib/runtime/legal. A lista completa está em
+docs/dependencies.md.
+
+Partes incluídas por dependências Apache, conforme seus arquivos NOTICE:
+
+Apache PDFBox
+Copyright 2002-2026 The Apache Software Foundation
+
+Apache FontBox
+Copyright 2008-2026 The Apache Software Foundation
+
+Apache Commons Logging
+Copyright 2001-2026 The Apache Software Foundation
+
+Esses produtos incluem software desenvolvido na The Apache Software
+Foundation (https://www.apache.org/).

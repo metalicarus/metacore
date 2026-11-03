@@ -25,6 +25,17 @@ class MetadataValueTest {
   }
 
   @Test
+  void valuesPrintAsThemselves() {
+    assertThat(MetadataValue.of("Genosha")).hasToString("Genosha");
+    assertThat(MetadataValue.of(4000)).hasToString("4000");
+    assertThat(MetadataValue.of(new BigDecimal("-23.5500000"))).hasToString("-23.5500000");
+    assertThat(MetadataValue.of(LocalDateTime.of(2026, 8, 1, 9, 0)))
+        .hasToString("2026-08-01T09:00:00");
+    assertThat(new ListValue(List.of(MetadataValue.of("a"), MetadataValue.of(1))))
+        .hasToString("[a, 1]");
+  }
+
+  @Test
   void rationalKeepsTheOriginalFraction() {
     RationalValue exposure = MetadataValue.rational(2, 250);
 

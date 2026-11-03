@@ -147,15 +147,19 @@ final class PngChunkScanner {
     }
   }
 
+  /** Pula bytes sem copiá-los; em arquivos, {@code skip} vira um seek. Devolve quantos pulou. */
   private static long skip(InputStream in, long count) throws IOException {
     long skipped = 0;
-    byte[] buffer = new byte[8192];
     while (skipped < count) {
-      int read = in.read(buffer, 0, (int) Math.min(buffer.length, count - skipped));
-      if (read == -1) {
-        break;
+      long step = in.skip(count - skipped);
+      if (step <= 0) {
+        // skip pode parar antes do fim sem indicar EOF; um read confirma.
+        if (in.read() == -1) {
+          break;
+        }
+        step = 1;
       }
-      skipped += read;
+      skipped += step;
     }
     return skipped;
   }

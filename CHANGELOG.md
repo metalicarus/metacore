@@ -2,52 +2,61 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
+Enquanto a versão for 0.x, versões minor podem trazer mudanças
+incompatíveis, sempre registradas aqui.
 
-## [Não lançado]
+## [0.1.0] - a definir
 
-### Adicionado
+Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
 
-- Suporte a PNG (Fase 5): IHDR, texto (`tEXt`, `zTXt`, `iTXt`), EXIF
-  (`eXIf`), XMP e demais chunks, com leitura tolerante a truncamento e
-  limite de descompactação para texto compactado.
-- Suporte a PDF (Fase 5) no `metacore-format-pdf`: versão, páginas,
-  criptografia, dicionário Info e XMP, com datas tipadas e precedência
-  Info/XMP conforme a versão do PDF.
-- `ResultRenderer` e `GoldenFiles` no `metacore-testkit`.
-- ADR 0012.
+### Biblioteca
 
-### Alterado
+- `MetadataAnalyzer` com `analyze` (arquivo, stream ou `InputSource`) e
+  `identify`; imutável, thread-safe e com descoberta de módulos por
+  `ServiceLoader`.
+- Resultado com cinco estados (`SUCCESS`, `PARTIAL`, `UNSUPPORTED`,
+  `UNKNOWN_FORMAT`, `FAILED`), avisos com códigos estáveis e consultas
+  `find`, `findAll` e `findRaw`.
+- Valores tipados (`MetadataValue`): texto, inteiro, decimal, fração,
+  booleano, data com e sem fuso, binário e lista. `toString()` devolve o
+  próprio valor (`4000`, `Genosha`, `2026-07-14T16:32:05-03:00`).
+- Origem de cada campo (nome original, namespace e parser) e valor
+  principal por chave, escolhido por precedência documentada.
+- Formatos com hierarquia de supertipos e resolução de conflitos entre
+  detectores.
+- Limites de recursos (`AnalysisLimits`), spool de streams em memória ou
+  em arquivo temporário e cancelamento cooperativo por prazo ou
+  interrupção.
+- SPI para módulos de terceiros (`FormatDetector`, `MetadataParser`,
+  `MetadataProvider`) e `metacore-testkit` com a suíte de contrato.
 
-- Datas no JSON e no texto da CLI sempre com segundos
-  (`2026-08-01T09:00:00Z`, e não `2026-08-01T09:00Z`).
-- CLI (Fase 4): comandos `identify` e `inspect`, saída em texto e em
-  JSON (NDJSON, `schemaVersion` 1), opções `--file`, `--max-file-size`,
-  `--show-path`, `--strict`, `--verbose`, `--quiet` e
-  `--include-binary`, códigos de saída 0 a 3 e perfil `dist` que gera um
-  executável com runtime próprio via jpackage.
-- ADR 0011.
-- Suporte a JPEG (Fase 3) no `metacore-format-image`: detector,
-  parser com EXIF, GPS, XMP e demais segmentos do metadata-extractor,
-  leitura tolerante a arquivos truncados, chaves normalizadas com
-  precedência, fixtures geradas por código, golden files, testes de XXE,
-  testes de robustez e alvo de fuzzing com Jazzer.
-- `docs/keys.md` com o vocabulário de chaves e a precedência do JPEG.
-- ADR 0010.
-- Contratos do core (Fase 2): `MetadataAnalyzer` com `analyze` e
-  `identify`, `MetadataResult`, `AnalysisLimits`, formatos com
-  hierarquia (`FileFormat`, `FormatRegistry`), detecção com resolução de
-  conflitos, valores tipados (`MetadataValue`), avisos com códigos
-  estáveis, `InputSource` com spool de streams, cancelamento cooperativo
-  e SPI (`FormatDetector`, `MetadataParser`, `MetadataProvider`) com
-  descoberta por `ServiceLoader`.
-- Módulo `metacore-testkit` com a suíte de contrato para parsers.
-- ADRs 0004 a 0009.
-- Estrutura Maven multi-módulo: `metacore-bom`, `metacore-core`,
-  `metacore-format-image`, `metacore-format-pdf`, `metacore-cli` e
-  `metacore-examples`.
-- Build com `--release 21` para a biblioteca e `--release 25` para a
-  CLI.
-- JUnit 5, AssertJ, Mockito, JaCoCo, Spotless (google-java-format) e
-  perfil `security` com OWASP Dependency-Check.
-- CI no GitHub Actions com Java 21 e 25.
-- Documentação inicial e ADRs 0001 a 0003.
+### Formatos
+
+- JPEG: estrutura, JFIF, EXIF, GPS em graus decimais, XMP e demais
+  segmentos do metadata-extractor, com leitura tolerante a truncamento.
+- PNG: IHDR, texto, EXIF (`eXIf`), XMP e demais chunks, com leitura
+  tolerante a truncamento e limite de descompactação.
+- PDF: versão, páginas, criptografia, dicionário Info e XMP, com datas
+  tipadas e precedência Info/XMP conforme a versão do PDF.
+
+### CLI
+
+- Comandos `identify` e `inspect`, saída em texto e em JSON (NDJSON,
+  `schemaVersion` 1), códigos de saída 0 a 3.
+- Executável com runtime próprio via jpackage (perfil `dist`) e workflow
+  que gera pacotes para Linux, macOS e Windows a cada tag.
+
+### Qualidade e segurança
+
+- Proteção contra XXE no XMP e contra zip bomb no PNG, com testes.
+- Fixtures geradas por código, golden files, testes de robustez com
+  mutações reproduzíveis e alvos de fuzzing com Jazzer (com corpus
+  inicial). Sem falhas em 10 min de JPEG (4,4 milhões de execuções) e
+  4 min de PNG (2,6 milhões); o PDF teve só a sessão de 60 s da Fase 5.
+- Benchmarks JMH (`metacore-benchmarks`) e limites padrão calibrados a
+  partir deles (`docs/performance.md`).
+- Dependências verificadas quanto a licença e vulnerabilidades
+  conhecidas (`docs/dependencies.md`).
+- CI com Java 21 (biblioteca) e 25 (tudo).
+
+[0.1.0]: https://github.com/metalicarus/metacore/releases/tag/v0.1.0

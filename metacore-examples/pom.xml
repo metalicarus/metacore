@@ -17,6 +17,10 @@
   <properties>
     <module.name>br.com.genosha.metacore.examples</module.name>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <!-- Não publicado: dispensa fontes, javadoc e assinatura no perfil release. -->
+    <maven.source.skip>true</maven.source.skip>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <gpg.skip>true</gpg.skip>
   </properties>
 
   <dependencies>
@@ -34,6 +38,13 @@
       <groupId>br.com.genosha</groupId>
       <artifactId>metacore-format-pdf</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

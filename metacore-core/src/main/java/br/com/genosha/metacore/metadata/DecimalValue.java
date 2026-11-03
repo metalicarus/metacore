@@ -14,4 +14,10 @@ public record DecimalValue(BigDecimal value) implements MetadataValue {
   public ValueType type() {
     return ValueType.DECIMAL;
   }
+
+  /** O próprio valor, como {@code -23.5500000}. */
+  @Override
+  public String toString() {
+    return value.toPlainString();
+  }
 }
