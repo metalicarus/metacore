@@ -66,8 +66,8 @@
     <profile>
       <id>dist</id>
       <properties>
-        <!-- O jpackage só aceita versões numéricas. -->
-        <dist.version>0.1.0</dist.version>
+        <!-- O jpackage só aceita versões numéricas: a versão do projeto sem o qualificador. -->
+        <dist.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</dist.version>
         <!-- Calculado com jdeps; java.xml (XMP) e jdk.charsets (textos EXIF) entram explicitamente. -->
         <dist.modules>java.base,java.desktop,java.logging,java.naming,java.sql,java.xml,jdk.charsets</dist.modules>
         <dist.input>${project.build.directory}/jpackage-input</dist.input>
@@ -96,6 +96,19 @@
                     </fileset>
                   </filesets>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build-helper-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>parse-version</id>
+                <goals>
+                  <goal>parse-version</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>

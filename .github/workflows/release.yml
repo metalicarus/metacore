@@ -1,13 +1,27 @@
 name: release
 
 # Ao enviar uma tag v*, gera o executável da CLI em Linux, macOS e Windows e anexa
-# os pacotes a um release em rascunho no GitHub (docs/release.md).
+# os pacotes a um release em rascunho no GitHub (docs/release.md). O disparo manual
+# gera de novo os pacotes de uma tag existente, por exemplo quando um runner faltou.
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag do release (por exemplo, v0.1.0)
+        required: true
+      os:
+        description: Sistema a gerar
+        type: choice
+        options: [todos, ubuntu-latest, macos-latest, windows-latest]
+        default: todos
 
 permissions:
   contents: write
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   draft:
@@ -18,9 +32,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
-            || gh release create "$GITHUB_REF_NAME" --draft \
-                 --title "MetaCore ${GITHUB_REF_NAME#v}" \
+          gh release view "$TAG" >/dev/null 2>&1 \
+            || gh release create "$TAG" --draft --verify-tag \
+                 --title "MetaCore ${TAG#v}" \
                  --notes "Mudanças em CHANGELOG.md."
 
   cli:
@@ -28,10 +42,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON((inputs.os && inputs.os != 'todos') && format('["{0}"]', inputs.os) || '["ubuntu-latest", "macos-latest", "windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
 
       - uses: actions/setup-java@v5
         with:
@@ -50,7 +66,7 @@ jobs:
         run: |
           os=$(echo "$RUNNER_OS" | tr '[:upper:]' '[:lower:]')
           arch=$(echo "$RUNNER_ARCH" | tr '[:upper:]' '[:lower:]')
-          name="metacore-${GITHUB_REF_NAME#v}-${os}-${arch}"
+          name="metacore-${TAG#v}-${os}-${arch}"
           cd metacore-cli/target/dist
           if [ "$RUNNER_OS" = "Windows" ]; then
             7z a "../$name.zip" . > /dev/null
@@ -59,4 +75,4 @@ jobs:
             tar czf "../$name.tar.gz" .
             file="../$name.tar.gz"
           fi
-          gh release upload "$GITHUB_REF_NAME" "$file" --clobber
+          gh release upload "$TAG" "$file" --clobber

@@ -108,10 +108,14 @@ git push origin main v0.1.0
 - O jpackage no macOS recusa versões que começam com zero; o pacote do
   macOS usa `1.0.0` no `Info.plist`. A versão real aparece em
   `metacore --version`.
-- Na 0.1.0, o job do macOS falhou duas vezes (na primeira, o GitHub não
-  conseguiu um runner macOS em 15 minutos) e o release saiu só com os
-  pacotes de Linux e Windows. O perfil `dist-mac` ainda não foi testado.
-- A versão do jpackage (`dist.version` no `metacore-cli/pom.xml`) é fixa:
-  atualize-a a cada release.
+- Na 0.1.0, as duas tentativas do macOS ficaram sem runner (o GitHub
+  desiste depois de 15 minutos na fila dos runners arm64) e o release saiu
+  só com os pacotes de Linux e Windows. O perfil `dist-mac` ainda não foi
+  testado.
+- Se um sistema ficar sem pacote, rode o workflow `release` à mão
+  (*Actions → release → Run workflow*) com a tag e o sistema: ele gera o
+  pacote a partir da tag e o anexa ao release, mesmo já publicado.
+- A versão do jpackage é a do projeto sem o qualificador (`0.2.0-SNAPSHOT`
+  vira `0.2.0`), calculada pelo `build-helper-maven-plugin`.
 - O push da tag dispara um workflow; o token do GitHub usado no push
   precisa do escopo `workflow`.
