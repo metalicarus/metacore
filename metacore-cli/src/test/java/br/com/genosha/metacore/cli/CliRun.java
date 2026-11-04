@@ -15,7 +15,7 @@ record CliRun(int exitCode, String out, String err) {
     CommandLine commandLine = MetacoreCli.commandLine();
     commandLine.setOut(new PrintWriter(out, true));
     commandLine.setErr(new PrintWriter(err, true));
-    int exitCode = commandLine.execute(args);
+    int exitCode = MetacoreCli.execute(commandLine, args);
     return new CliRun(exitCode, out.toString(), err.toString());
   }
 

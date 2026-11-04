@@ -22,6 +22,19 @@ incompatíveis, sempre registradas aqui.
 - `inspect --isolate`, com `--timeout` e `--max-memory`.
 - O runtime do executável passa a incluir `bin/java`, usado pelos
   workers.
+- `inspect` vira o comando padrão: `metacore foto.jpg`. Sem argumentos,
+  `metacore` mostra o nome em ASCII e exemplos, e sai com 0 (antes, 2).
+- Pastas como entrada, com `-r`, `--include`, `--exclude` e `--hidden`
+  (ADR 0017). `-` lê a entrada padrão.
+- `-j N` analisa arquivos em paralelo, mantendo a ordem da saída.
+- Saída `-o csv`, com uma linha por arquivo e proteção contra fórmulas.
+- `-k` seleciona campos por chave, no texto, no JSON e no CSV.
+- Nova saída em texto: campos agrupados, valores legíveis, cores
+  (`--color`, `NO_COLOR`), resumo final e progresso ao gravar em
+  arquivo. Caracteres de controle dos metadados viram escapes visíveis.
+  A saída em texto nunca foi contrato; `-q` mantém o formato anterior.
+- Ajuda agrupada por seções, erros de uso curtos com sugestões e
+  `metacore completion` para bash e zsh.
 
 ## [0.1.0] - 2026-11-04
 
