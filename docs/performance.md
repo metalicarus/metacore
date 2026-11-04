@@ -41,6 +41,30 @@ Leituras:
   poderem ser relidos: até 8 MiB em memória, o resto em arquivo
   temporário. Antes da correção, o PNG como stream levava 38 ms.
 
+## Análise isolada
+
+`IsolatedAnalyzer` (ADR 0016) soma a troca de mensagens com o worker e,
+no primeiro uso de cada worker, a subida da JVM. Medido com um laço
+simples (5.000 análises por arquivo depois de aquecer, um worker), na
+mesma máquina:
+
+| Entrada | Em processo | Isolada | Primeira análise isolada |
+|---|---|---|---|
+| JPEG 64x48 com EXIF e GPS | 75 µs | 0,66 ms | 0,2 s |
+| PNG com texto | 47 µs | 0,49 ms | 0,15 s |
+| PDF com Info, 3 páginas | 130 µs | 0,82 ms | 0,19 s |
+
+Na CLI, `inspect --isolate` com os três arquivos levou 1,1 s, contra
+0,9 s em processo. O custo fixo de cerca de 0,5 ms por análise só pesa
+em arquivos pequenos; quem precisa de vazão usa `workers(n)`.
+
+| Opção | Padrão | Motivo |
+|---|---|---|
+| `timeout` | 30 s | Duas ordens de grandeza acima da análise mais lenta medida; serve para matar travamentos, não para cortar arquivos lentos |
+| `maxHeapSize` | 512 MiB | Cobre o PNG e o PDF lidos inteiros até o `maxFileSize` padrão sem que a JVM do worker fique grande |
+| `workers` | 1 | Conservador: cada worker é uma JVM. Aumente para analisar em paralelo |
+| `maxAnalysesPerWorker` | 1.000 | Limita vazamentos nas bibliotecas de formato; trocar um worker custa uma subida de JVM a cada 1.000 análises |
+
 ## Limites padrão
 
 | Limite | Padrão | Motivo |
