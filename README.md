@@ -8,6 +8,18 @@ comando.
 > no Maven Central. Suporta JPEG, PNG e PDF. O plano completo está em
 > [docs/blueprint.md](docs/blueprint.md).
 
+## Quando usar o MetaCore (e quando usar o Tika)
+
+O MetaCore devolve metadados **tipados** (datas com fuso, frações,
+números), diz **de onde veio cada valor** e informa **o que deu errado**
+(`PARTIAL`, `TRUNCATED`, `ENCRYPTED`...) em vez de lançar exceção. Cobre
+poucos formatos (JPEG, PNG, PDF), com cerca de 5 MB de dependências.
+
+O [Apache Tika](https://tika.apache.org) cobre centenas de formatos,
+extrai texto e detecta mais de mil tipos MIME. Se você precisa disso, use
+o Tika. A comparação detalhada, com os mesmos arquivos nos dois, está em
+[docs/fase0-tika.md](docs/fase0-tika.md).
+
 ## Instalação
 
 Depois da publicação no Maven Central:
@@ -126,6 +138,7 @@ O relatório de cobertura do JaCoCo fica em
 ## Documentação
 
 - [Blueprint e roadmap](docs/blueprint.md)
+- [Comparação com o Apache Tika](docs/fase0-tika.md)
 - [Formatos suportados e limitações](docs/formats.md)
 - [Chaves normalizadas](docs/keys.md)
 - [Desempenho e limites padrão](docs/performance.md)

@@ -15,42 +15,42 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 
 /** Gera PDFs de teste por código, com o próprio PDFBox. */
-final class PdfFixtures {
+public final class PdfFixtures {
 
   private PdfFixtures() {}
 
   /** Uma página, sem Info nem XMP. */
-  static byte[] simple() {
+  public static byte[] simple() {
     return build(1, 1.7f, Map.of(), null, null);
   }
 
   /** Três páginas e dicionário Info completo, com datas com e sem fuso e uma chave própria. */
-  static byte[] withInfo() {
+  public static byte[] withInfo() {
     return build(3, 1.7f, standardInfo(), null, null);
   }
 
   /** Data de criação sem fuso declarado. */
-  static byte[] dateWithoutOffset() {
+  public static byte[] dateWithoutOffset() {
     return build(1, 1.7f, Map.of("CreationDate", "D:20260714163205"), null, null);
   }
 
   /** Data que não segue o formato de PDF. */
-  static byte[] invalidDate() {
+  public static byte[] invalidDate() {
     return build(1, 1.7f, Map.of("CreationDate", "yesterday"), null, null);
   }
 
   /** PDF 1.7 com títulos diferentes no Info e no XMP: vale o Info. */
-  static byte[] infoAndXmp() {
+  public static byte[] infoAndXmp() {
     return build(1, 1.7f, Map.of("Title", "Info Title"), xmp("XMP Title"), null);
   }
 
   /** PDF 2.0 com títulos diferentes no Info e no XMP: vale o XMP. */
-  static byte[] pdf20InfoAndXmp() {
+  public static byte[] pdf20InfoAndXmp() {
     return build(1, 2.0f, Map.of("Title", "Info Title"), xmp("XMP Title"), null);
   }
 
   /** XMP com DOCTYPE e entidade externa apontando para {@code secretUri}. */
-  static byte[] xmpWithExternalEntity(String secretUri) {
+  public static byte[] xmpWithExternalEntity(String secretUri) {
     String packet =
         "<?xml version=\"1.0\"?>\n<!DOCTYPE x:xmpmeta [<!ENTITY xxe SYSTEM \""
             + secretUri
@@ -61,7 +61,7 @@ final class PdfFixtures {
   }
 
   /** Protegido com senha de usuário: sem a senha, nada é legível. */
-  static byte[] userPassword() {
+  public static byte[] userPassword() {
     return build(
         1,
         1.7f,
@@ -71,7 +71,7 @@ final class PdfFixtures {
   }
 
   /** Criptografado só com senha de proprietário: abre sem senha. */
-  static byte[] ownerPasswordOnly() {
+  public static byte[] ownerPasswordOnly() {
     return build(
         1,
         1.7f,
@@ -80,7 +80,7 @@ final class PdfFixtures {
         new StandardProtectionPolicy("owner", "", new AccessPermission()));
   }
 
-  static byte[] truncate(byte[] content, int length) {
+  public static byte[] truncate(byte[] content, int length) {
     return Arrays.copyOf(content, length);
   }
 

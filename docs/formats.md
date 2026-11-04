@@ -17,8 +17,11 @@ As chaves normalizadas e a precedência entre fontes estão em
   metadata-extractor e do PDFBox não pode ser interrompido;
   `maxAnalysisTime` só vale entre etapas (ADR 0008). Para arquivos
   hostis em larga escala, isole a análise em outro processo.
-- `InputStream` acima de `spoolMemoryThreshold` é copiado para um
-  arquivo temporário durante a análise.
+- `InputStream` é copiado por inteiro antes da análise (até
+  `spoolMemoryThreshold` em memória, o resto em arquivo temporário),
+  mesmo quando o parser só precisa do começo. Com arquivos grandes,
+  prefira passar o `Path`. A correção está prevista para antes do
+  0.1.0 (ADR 0014).
 - Formatos sem parser (por exemplo ZIP, se um detector de terceiros o
   reconhecer) terminam em `UNSUPPORTED`; formatos desconhecidos, em
   `UNKNOWN_FORMAT`.

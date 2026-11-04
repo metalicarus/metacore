@@ -37,6 +37,7 @@ release do GitHub ficam esperando a sua confirmação.
 
 ## Checklist antes do release
 
+- [ ] Spool de streams sob demanda (ADR 0014): obrigatório para o 0.1.0.
 - [ ] CI verde em Java 21 e 25.
 - [ ] `mvn -Psecurity verify` sem vulnerabilidades com CVSS 7 ou mais.
 - [ ] Fuzzing de 10 min por alvo sem falhas

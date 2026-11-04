@@ -1,0 +1,12 @@
+<configuration>
+  <!-- Sem logs na medição: o Tika e o PDFBox registram muito em DEBUG e WARN. -->
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%level %logger{30}: %msg%n</pattern>
+    </encoder>
+  </appender>
+  <root level="ERROR">
+    <appender-ref ref="STDERR" />
+  </root>
+</configuration>

@@ -371,6 +371,16 @@
       </build>
     </profile>
     <!--
+      Comparação com o Apache Tika (ADR 0014). Fora da build padrão para não baixar o
+      Tika a cada execução: mvn -Pcomparison package -pl metacore-comparison -am
+    -->
+    <profile>
+      <id>comparison</id>
+      <modules>
+        <module>metacore-comparison</module>
+      </modules>
+    </profile>
+    <!--
       Publicação no Maven Central (docs/release.md): mvn -Prelease clean deploy
       Gera fontes e javadoc, assina com GPG e envia ao Central Portal sem publicar
       (a publicação é confirmada no portal).

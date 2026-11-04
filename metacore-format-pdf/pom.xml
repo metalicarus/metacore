@@ -18,6 +18,23 @@
     <module.name>br.com.genosha.metacore.format.pdf</module.name>
   </properties>
 
+  <build>
+    <plugins>
+      <!-- Publica as fixtures (PdfFixtures) para outros módulos de teste. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>br.com.genosha</groupId>

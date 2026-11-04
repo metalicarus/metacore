@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>metacore-comparison</artifactId>
+  <name>MetaCore Comparison</name>
+  <description>Comparação com o Apache Tika (Fase 0, ADR 0014). Não é publicado.</description>
+
+  <properties>
+    <module.name>br.com.genosha.metacore.comparison</module.name>
+    <maven.compiler.release>25</maven.compiler.release>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.source.skip>true</maven.source.skip>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <gpg.skip>true</gpg.skip>
+    <tika.version>4.1.0</tika.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-pdf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-pdf</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-testkit</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+      <version>${tika.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parser-image-module</artifactId>
+      <version>${tika.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parser-pdf-module</artifactId>
+      <version>${tika.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-classpath</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
