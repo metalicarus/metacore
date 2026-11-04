@@ -107,6 +107,9 @@ git push origin main v0.1.0
 - O jpackage no macOS recusa versões que começam com zero; o pacote do
   macOS usa `1.0.0` no `Info.plist`. A versão real aparece em
   `metacore --version`.
+- Na 0.1.0, o job do macOS falhou duas vezes (na primeira, o GitHub não
+  conseguiu um runner macOS em 15 minutos) e o release saiu só com os
+  pacotes de Linux e Windows. O perfil `dist-mac` ainda não foi testado.
 - A versão do jpackage (`dist.version` no `metacore-cli/pom.xml`) é fixa:
   atualize-a a cada release.
 - O push da tag dispara um workflow; o token do GitHub usado no push
