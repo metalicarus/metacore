@@ -1,101 +1,109 @@
 package br.com.genosha.metacore.cli;
 
 import br.com.genosha.metacore.api.ExtractionStatus;
+import br.com.genosha.metacore.api.MetadataAnalyzer;
 import br.com.genosha.metacore.api.MetadataResult;
-import br.com.genosha.metacore.cli.CommonOptions.Output;
-import br.com.genosha.metacore.exception.MetaCoreException;
 import br.com.genosha.metacore.isolation.IsolatedAnalyzer;
-import java.nio.file.Path;
+import java.io.PrintWriter;
 import java.time.Duration;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Spec;
+import picocli.CommandLine.ParameterException;
 
 /** {@code metacore inspect}: identifica e extrai os metadados. */
 @Command(
     name = "inspect",
     mixinStandardHelpOptions = true,
-    description = "Identify files and extract their metadata.")
-final class InspectCommand implements Callable<Integer> {
+    customSynopsis = "metacore [inspect] [OPTIONS] PATH...",
+    description = {
+      "Identify files and extract their metadata.",
+      "This is the default command: 'metacore photo.jpg' is the same as"
+          + " 'metacore inspect photo.jpg'."
+    })
+final class InspectCommand extends AnalysisCommand<MetadataResult> {
 
-  @Mixin CommonOptions options;
+  @ArgGroup(validate = false, heading = "%nFields:%n", order = 3)
+  FieldOptions fields = new FieldOptions();
 
-  @ArgGroup(exclusive = true)
-  DetailOptions detail = new DetailOptions();
+  @ArgGroup(validate = false, heading = "%nIsolation:%n", order = 5)
+  IsolationOptions isolation = new IsolationOptions();
 
-  @Option(
-      names = "--include-binary",
-      description = "Include binary values as base64 in JSON output (up to 64 KiB each).")
-  boolean includeBinary;
-
-  @Option(
-      names = "--isolate",
-      description =
-          "Analyze in a separate worker process, which can be killed on timeout or crash"
-              + " without stopping the command.")
-  boolean isolate;
-
-  @Option(
-      names = "--timeout",
-      paramLabel = "DURATION",
-      converter = DurationConverter.class,
-      description = "Hard limit per file, e.g. 10s or 2m (default: 30s). Implies --isolate.")
-  Duration timeout;
-
-  @Option(
-      names = "--max-memory",
-      paramLabel = "SIZE",
-      converter = DataSizeConverter.class,
-      description = "Heap of the worker process, e.g. 256M (default: 512M). Implies --isolate.")
-  Long maxMemory;
-
-  @Spec CommandSpec spec;
-
-  static final class DetailOptions {
+  /** O que mostrar de cada arquivo. */
+  static final class FieldOptions {
     @Option(
         names = {"-v", "--verbose"},
-        description = "Show every field, not only the normalized ones (text output).")
+        description = "Show every field as found in the file, not only the normalized ones.")
     boolean verbose;
 
     @Option(
         names = {"-q", "--quiet"},
-        description = "Show only the status of each file (text output).")
+        description = "Show only the status of each file.")
     boolean quiet;
+
+    @Option(
+        names = {"-k", "--key"},
+        paramLabel = "KEY",
+        description =
+            "Show only normalized fields matching KEY, where * matches anything, e.g."
+                + " 'location.*' or '*.width' (repeatable or comma-separated).")
+    List<String> keys = new ArrayList<>();
+
+    @Option(
+        names = "--include-binary",
+        description = "Include binary values as base64 in JSON output (up to 64 KiB each).")
+    boolean includeBinary;
+  }
+
+  /** Análise em processo separado (ADR 0016). */
+  static final class IsolationOptions {
+    @Option(
+        names = "--isolate",
+        description =
+            "Analyze in a separate worker process, which can be killed on timeout or crash"
+                + " without stopping the command.")
+    boolean isolate;
+
+    @Option(
+        names = "--timeout",
+        paramLabel = "DURATION",
+        converter = DurationConverter.class,
+        description = "Hard limit per file, e.g. 10s or 2m (default: 30s). Implies --isolate.")
+    Duration timeout;
+
+    @Option(
+        names = "--max-memory",
+        paramLabel = "SIZE",
+        converter = DataSizeConverter.class,
+        description = "Heap of the worker process, e.g. 256M (default: 512M). Implies --isolate.")
+    Long maxMemory;
   }
 
   @Override
-  public Integer call() throws Exception {
-    JsonRenderer json = new JsonRenderer(includeBinary);
-    int exit = ExitCodes.OK;
-    try (Engine engine = engine();
-        Output out = options.openOutput(spec)) {
-      for (Path file : options.files) {
-        exit = ExitCodes.worst(exit, inspect(engine, json, out, file));
-      }
-    }
-    return exit;
-  }
-
-  /** Análise no próprio processo ou em workers (ADR 0016). */
-  private record Engine(Function<Path, MetadataResult> analyzer, Runnable closer)
-      implements AutoCloseable {
-    @Override
-    public void close() {
-      closer.run();
+  void validate() {
+    // O grupo de campos não valida exclusividade: ele existe só para a seção da ajuda.
+    if (fields.verbose && fields.quiet) {
+      throw new ParameterException(
+          spec.commandLine(), "--verbose and --quiet cannot be used together");
     }
   }
 
-  private Engine engine() {
-    if (!isolate && timeout == null && maxMemory == null) {
-      return new Engine(options.analyzer()::analyze, () -> {});
+  @Override
+  Analyzer<MetadataResult> analyzer() {
+    Duration timeout = isolation.timeout;
+    Long maxMemory = isolation.maxMemory;
+    if (!isolation.isolate && timeout == null && maxMemory == null) {
+      MetadataAnalyzer analyzer = options.analyzer();
+      return input ->
+          input.path().isPresent()
+              ? analyzer.analyze(input.path().get())
+              : analyzer.analyze(System.in, null);
     }
-    IsolatedAnalyzer.Builder builder = IsolatedAnalyzer.builder().limits(options.limits());
+    // ADR 0016: um worker por job.
+    IsolatedAnalyzer.Builder builder =
+        IsolatedAnalyzer.builder().limits(options.limits()).workers(options.analysis.jobs);
     if (timeout != null) {
       builder.timeout(timeout);
     }
@@ -103,35 +111,62 @@ final class InspectCommand implements Callable<Integer> {
       builder.maxHeapSize(maxMemory);
     }
     IsolatedAnalyzer analyzer = builder.build();
-    return new Engine(analyzer::analyze, analyzer::close);
+    return new Analyzer<>() {
+      @Override
+      public MetadataResult analyze(Input input) {
+        return input.path().isPresent()
+            ? analyzer.analyze(input.path().get())
+            : analyzer.analyze(System.in, null);
+      }
+
+      @Override
+      public void close() {
+        analyzer.close();
+      }
+    };
   }
 
-  private int inspect(Engine engine, JsonRenderer json, Output out, Path file) {
-    MetadataResult result;
-    try {
-      result = engine.analyzer().apply(file);
-    } catch (MetaCoreException e) {
-      Failures.report(spec, options, json, out, file, e);
-      return ExitCodes.FAILURE;
-    }
-    if (options.output == OutputFormat.JSON) {
-      Optional<String> path = options.showPath ? Optional.of(file.toString()) : Optional.empty();
-      out.writer().println(json.inspect(result, path));
-    } else {
-      TextRenderer.inspect(out.writer(), options.label(file), result, detail());
-    }
+  @Override
+  boolean identify() {
+    return false;
+  }
+
+  @Override
+  void report(Report report, Input input, MetadataResult result) {
+    report.inspected(input, result);
+  }
+
+  @Override
+  void count(Tally tally, MetadataResult result) {
+    tally.add(result.status());
+  }
+
+  @Override
+  int exitCode(MetadataResult result) {
     if (result.status() == ExtractionStatus.FAILED) {
       return ExitCodes.FAILURE;
     }
-    return options.strict && result.status() != ExtractionStatus.SUCCESS
+    return options.analysis.strict && result.status() != ExtractionStatus.SUCCESS
         ? ExitCodes.STRICT
         : ExitCodes.OK;
   }
 
-  private TextRenderer.Detail detail() {
-    if (detail.verbose) {
-      return TextRenderer.Detail.VERBOSE;
-    }
-    return detail.quiet ? TextRenderer.Detail.QUIET : TextRenderer.Detail.NORMAL;
+  @Override
+  Report textReport(PrintWriter out, PrintWriter err, Style style) {
+    TextReport.Detail level =
+        fields.verbose
+            ? TextReport.Detail.VERBOSE
+            : fields.quiet ? TextReport.Detail.QUIET : TextReport.Detail.NORMAL;
+    return new TextReport(out, err, style, level, keys(), options.output.showPath);
+  }
+
+  @Override
+  KeyFilter keys() {
+    return KeyFilter.of(fields.keys);
+  }
+
+  @Override
+  boolean includeBinary() {
+    return fields.includeBinary;
   }
 }

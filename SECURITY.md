@@ -29,6 +29,9 @@ arquivo que reproduza o problema.
   processadas. Testes provam isso nos três formatos.
 - Texto compactado do PNG é medido antes de ser descompactado.
 - Parsers passam por testes de robustez e fuzzing com Jazzer.
+- A CLI troca caracteres de controle vindos dos metadados por escapes
+  visíveis, para que um arquivo não controle o terminal, e protege o CSV
+  contra injeção de fórmulas.
 - Análise opcional em processo separado (`metacore-isolation`, ADR
   0016), com prazo rígido e teto de memória: um parser travado ou sem
   memória vira resultado `FAILED`, sem derrubar a aplicação.

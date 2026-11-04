@@ -2,54 +2,71 @@ package br.com.genosha.metacore.cli;
 
 import br.com.genosha.metacore.api.IdentificationResult;
 import br.com.genosha.metacore.api.MetadataAnalyzer;
-import br.com.genosha.metacore.cli.CommonOptions.Output;
-import br.com.genosha.metacore.exception.MetaCoreException;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.concurrent.Callable;
+import br.com.genosha.metacore.exception.InputLimitExceededException;
+import br.com.genosha.metacore.exception.InvalidInputException;
+import br.com.genosha.metacore.io.InputSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Model.CommandSpec;
-import picocli.CommandLine.Spec;
 
 /** {@code metacore identify}: só identifica o formato, sem extrair metadados. */
 @Command(
     name = "identify",
     mixinStandardHelpOptions = true,
+    customSynopsis = "metacore identify [OPTIONS] PATH...",
     description = "Identify the format of files without extracting metadata.")
-final class IdentifyCommand implements Callable<Integer> {
-
-  @Mixin CommonOptions options;
-
-  @Spec CommandSpec spec;
+final class IdentifyCommand extends AnalysisCommand<IdentificationResult> {
 
   @Override
-  public Integer call() throws Exception {
+  Analyzer<IdentificationResult> analyzer() {
     MetadataAnalyzer analyzer = options.analyzer();
-    JsonRenderer json = new JsonRenderer(false);
-    int exit = ExitCodes.OK;
-    try (Output out = options.openOutput(spec)) {
-      for (Path file : options.files) {
-        exit = ExitCodes.worst(exit, identify(analyzer, json, out, file));
-      }
-    }
-    return exit;
+    return input ->
+        input.path().isPresent()
+            ? analyzer.identify(input.path().get())
+            : analyzer.identify(standardInput(analyzer.limits().maxFileSize()));
   }
 
-  private int identify(MetadataAnalyzer analyzer, JsonRenderer json, Output out, Path file) {
-    IdentificationResult result;
+  /** A identificação precisa de uma fonte relida; a entrada padrão é lida para a memória. */
+  private static InputSource standardInput(long maxFileSize) {
+    InputStream in = System.in;
     try {
-      result = analyzer.identify(file);
-    } catch (MetaCoreException e) {
-      Failures.report(spec, options, json, out, file, e);
-      return ExitCodes.FAILURE;
+      byte[] content = in.readNBytes((int) Math.min(maxFileSize + 1, Integer.MAX_VALUE - 8));
+      if (content.length > maxFileSize) {
+        throw new InputLimitExceededException(
+            "Standard input is larger than the limit of " + maxFileSize + " bytes");
+      }
+      return InputSource.of(content, null);
+    } catch (IOException e) {
+      throw new InvalidInputException("Could not read standard input", e);
     }
-    if (options.output == OutputFormat.JSON) {
-      Optional<String> path = options.showPath ? Optional.of(file.toString()) : Optional.empty();
-      out.writer().println(json.identify(result, path));
-    } else {
-      TextRenderer.identify(out.writer(), options.label(file), result);
-    }
-    return options.strict && result.detection().isEmpty() ? ExitCodes.STRICT : ExitCodes.OK;
+  }
+
+  @Override
+  boolean identify() {
+    return true;
+  }
+
+  @Override
+  void report(Report report, Input input, IdentificationResult result) {
+    report.identified(input, result);
+  }
+
+  @Override
+  void count(Tally tally, IdentificationResult result) {
+    tally.identified(result.detection().isPresent());
+  }
+
+  @Override
+  int exitCode(IdentificationResult result) {
+    return options.analysis.strict && result.detection().isEmpty()
+        ? ExitCodes.STRICT
+        : ExitCodes.OK;
+  }
+
+  @Override
+  Report textReport(PrintWriter out, PrintWriter err, Style style) {
+    return new TextReport(
+        out, err, style, TextReport.Detail.NORMAL, KeyFilter.ALL, options.output.showPath);
   }
 }

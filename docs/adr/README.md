@@ -23,6 +23,7 @@ apontam um para o outro.
 | [0014](0014-relacao-com-o-tika.md) | Relação com o Apache Tika (resultado da Fase 0) | Aceito |
 | [0015](0015-stream-sob-demanda.md) | InputSource de stream sob demanda | Aceito |
 | [0016](0016-isolamento-em-processo.md) | Análise isolada em processo separado | Aceito |
+| [0017](0017-cli-pastas-csv-e-saida-em-texto.md) | CLI: pastas, CSV e saída em texto | Aceito |
 
 ## Modelo
 

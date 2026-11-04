@@ -90,12 +90,24 @@ que em processo. Detalhes e limitações no
 ## CLI
 
 ```bash
-metacore inspect foto.jpg
-metacore inspect --verbose foto.jpg
-metacore inspect --output json foto.jpg outra.jpg | jq .
-metacore identify *.jpg
-metacore inspect --isolate --timeout 10s upload.pdf
+metacore foto.jpg                         # o mesmo que metacore inspect foto.jpg
+metacore foto.jpg --verbose               # todos os campos, como vieram do arquivo
+metacore ./fotos -r                       # uma pasta e suas subpastas
+metacore ./fotos -r --include '*.jpg' -j 4
+metacore ./fotos -r -o csv -f fotos.csv   # planilha, uma linha por arquivo
+metacore doc.pdf -o json | jq .           # NDJSON, uma linha por arquivo
+metacore foto.jpg -k 'location.*'         # só os campos pedidos
+cat upload.bin | metacore -               # entrada padrão
+metacore identify *                       # só o formato
+metacore --isolate --timeout 10s upload.pdf
 ```
+
+Sem argumentos, `metacore` mostra os usos mais comuns, e
+`metacore inspect --help` lista as opções por seção. A saída em texto
+tem cores no terminal (desligadas com `NO_COLOR` ou `--color never`) e
+não é um contrato. Para automação, use `-q`, JSON ou CSV; `metacore
+completion` gera o autocompletar para bash e zsh. Detalhes no
+[ADR 0017](docs/adr/0017-cli-pastas-csv-e-saida-em-texto.md).
 
 A saída JSON tem uma linha por arquivo e segue o contrato do
 [ADR 0011](docs/adr/0011-cli-e-contrato-json.md). Códigos de saída: 0
