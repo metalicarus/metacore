@@ -13,10 +13,11 @@ As chaves normalizadas e a precedência entre fontes estão em
 
 ### Gerais
 
-- A análise roda no mesmo processo da aplicação. Código dentro do
-  metadata-extractor e do PDFBox não pode ser interrompido;
-  `maxAnalysisTime` só vale entre etapas (ADR 0008). Para arquivos
-  hostis em larga escala, isole a análise em outro processo.
+- Com `MetadataAnalyzer`, a análise roda no mesmo processo da
+  aplicação. Código dentro do metadata-extractor e do PDFBox não pode ser
+  interrompido; `maxAnalysisTime` só vale entre etapas (ADR 0008). Para
+  arquivos hostis, use `IsolatedAnalyzer` (módulo `metacore-isolation`,
+  ADR 0016), que mata a análise no prazo e sobrevive à falta de memória.
 - `InputStream` é lido sob demanda (ADR 0015). PNG e PDF leem o
   conteúdo inteiro; num stream, ele fica guardado até
   `spoolMemoryThreshold` em memória e o resto em arquivo temporário.

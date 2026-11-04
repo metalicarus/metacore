@@ -207,6 +207,25 @@ class MetacoreCliTest {
   }
 
   @Test
+  void isolatedInspectGivesTheSameOutput() {
+    String[] files = {photo.toString(), truncated.toString(), text.toString()};
+    CliRun inProcess = CliRun.run(concat(new String[] {"inspect", "-o", "json"}, files));
+    CliRun isolated =
+        CliRun.run(concat(new String[] {"inspect", "-o", "json", "--timeout", "20s"}, files));
+
+    assertThat(isolated.exitCode()).isEqualTo(inProcess.exitCode());
+    assertThat(isolated.out()).isEqualTo(inProcess.out());
+    assertThat(isolated.err()).isEmpty();
+    assertThat(CliRun.run("inspect", "--timeout", "0s", photo.toString()).exitCode())
+        .isEqualTo(ExitCodes.USAGE);
+  }
+
+  private static String[] concat(String[] a, String[] b) {
+    return java.util.stream.Stream.concat(java.util.Arrays.stream(a), java.util.Arrays.stream(b))
+        .toArray(String[]::new);
+  }
+
+  @Test
   void helpMentionsPersonalDataAndExitCodes() {
     CliRun run = CliRun.run("--help");
 

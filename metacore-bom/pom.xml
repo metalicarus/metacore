@@ -67,6 +67,11 @@
         <artifactId>metacore-format-pdf</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>br.com.genosha</groupId>
+        <artifactId>metacore-isolation</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

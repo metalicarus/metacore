@@ -29,12 +29,18 @@ arquivo que reproduza o problema.
   processadas. Testes provam isso nos três formatos.
 - Texto compactado do PNG é medido antes de ser descompactado.
 - Parsers passam por testes de robustez e fuzzing com Jazzer.
+- Análise opcional em processo separado (`metacore-isolation`, ADR
+  0016), com prazo rígido e teto de memória: um parser travado ou sem
+  memória vira resultado `FAILED`, sem derrubar a aplicação.
 
 ## Limitações conhecidas
 
-- A análise roda no mesmo processo da aplicação. Código das bibliotecas
-  de formato (metadata-extractor, PDFBox) não pode ser interrompido;
-  a proteção principal são os limites de tamanho. Para processar
-  arquivos hostis em larga escala, isole a análise em um processo
-  separado.
+- Com `MetadataAnalyzer`, a análise roda no mesmo processo da
+  aplicação, e código das bibliotecas de formato (metadata-extractor,
+  PDFBox) não pode ser interrompido. Para arquivos hostis, use
+  `IsolatedAnalyzer`.
+- O processo separado protege contra travamento, falta de memória e
+  queda da JVM, não contra execução de código: o worker roda com as
+  permissões de quem o criou. Um sandbox do sistema operacional pode ser
+  montado com `IsolatedAnalyzer.Builder.launcher`.
 - Lista completa por formato em [docs/formats.md](docs/formats.md).

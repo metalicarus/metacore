@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-parent</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>metacore-isolation</artifactId>
+  <name>MetaCore Isolation</name>
+  <description>Análise em processo separado, com prazo rígido e teto de memória.</description>
+
+  <properties>
+    <module.name>br.com.genosha.metacore.isolation</module.name>
+  </properties>
+
+  <!-- Como o core, não traz dependências além da SLF4J API (ADR 0016). -->
+  <dependencies>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Formatos reais para comparar a análise isolada com a análise em processo. -->
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-pdf</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-pdf</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

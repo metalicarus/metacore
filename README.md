@@ -67,6 +67,26 @@ resto vira `status` e `warnings` no resultado. Mais exemplos, inclusive
 como adicionar um formato próprio, em
 [metacore-examples](metacore-examples/src/main/java/br/com/genosha/metacore/examples).
 
+### Arquivos hostis: análise isolada
+
+Para arquivos de origem desconhecida, o módulo `metacore-isolation`
+(mesmo `groupId`, versão pelo BOM) roda a análise em processos Java
+separados, com prazo rígido e teto de memória. Um parser travado é morto e vira `FAILED` com aviso `TIMEOUT`;
+falta de memória vira `FAILED` com `WORKER_FAILED`, sem derrubar a
+aplicação.
+
+```java
+try (IsolatedAnalyzer analyzer =
+    IsolatedAnalyzer.builder().timeout(Duration.ofSeconds(10)).workers(4).build()) {
+  MetadataResult result = analyzer.analyze(Path.of("upload.pdf"));
+}
+```
+
+Os workers são reaproveitados; a primeira análise de cada um paga a
+subida da JVM (cerca de 0,2 s) e as seguintes, cerca de 0,5 ms a mais
+que em processo. Detalhes e limitações no
+[ADR 0016](docs/adr/0016-isolamento-em-processo.md).
+
 ## CLI
 
 ```bash
@@ -74,6 +94,7 @@ metacore inspect foto.jpg
 metacore inspect --verbose foto.jpg
 metacore inspect --output json foto.jpg outra.jpg | jq .
 metacore identify *.jpg
+metacore inspect --isolate --timeout 10s upload.pdf
 ```
 
 A saída JSON tem uma linha por arquivo e segue o contrato do
@@ -99,6 +120,7 @@ metacore-cli/target/dist/metacore/bin/metacore --help
 | `metacore-testkit` | Suíte de contrato para parsers (dependência de teste) | 21+ |
 | `metacore-format-image` | JPEG e PNG (metadata-extractor) | 21+ |
 | `metacore-format-pdf` | PDF (Apache PDFBox) | 21+ |
+| `metacore-isolation` | Análise em processo separado, com prazo rígido e teto de memória | 21+ |
 | `metacore-cli` | Ferramenta `metacore` (picocli) | 25 |
 | `metacore-examples` | Exemplos de integração; não é publicado | 21+ |
 | `metacore-benchmarks` | Benchmarks JMH; não é publicado | 21+ |

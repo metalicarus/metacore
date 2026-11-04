@@ -5,6 +5,24 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 Enquanto a versão for 0.x, versões minor podem trazer mudanças
 incompatíveis, sempre registradas aqui.
 
+## [Não publicado]
+
+### Biblioteca
+
+- Módulo `metacore-isolation` (ADR 0016): `IsolatedAnalyzer` analisa
+  arquivos e streams em processos Java separados, reaproveitados entre
+  análises, com prazo rígido (`timeout`) e teto de memória
+  (`maxHeapSize`). Um parser travado vira `FAILED` com aviso `TIMEOUT`;
+  falta de memória ou queda da JVM do worker, `FAILED` com
+  `WORKER_FAILED`. Streams continuam lidos sob demanda.
+- `FileInfo.of(name, size)` calcula a extensão a partir do nome.
+
+### CLI
+
+- `inspect --isolate`, com `--timeout` e `--max-memory`.
+- O runtime do executável passa a incluir `bin/java`, usado pelos
+  workers.
+
 ## [0.1.0] - 2026-11-04
 
 Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
