@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * Conteúdo a analisar, com leitura sequencial e acesso aleatório. Cada chamada de {@link
@@ -18,8 +19,11 @@ public interface InputSource {
   /** Nome declarado do arquivo, sem diretórios, quando conhecido. */
   Optional<String> fileName();
 
-  /** Tamanho do conteúdo em bytes. */
-  long size();
+  /**
+   * Tamanho do conteúdo em bytes, quando conhecido. Arquivos e arrays sempre informam; uma fonte
+   * sobre um {@code InputStream} só sabe o tamanho depois de ler o stream até o fim.
+   */
+  OptionalLong size();
 
   /** Abre um fluxo sequencial a partir do início. */
   InputStream openStream() throws IOException;

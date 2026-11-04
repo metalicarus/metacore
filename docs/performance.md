@@ -25,7 +25,7 @@ versões na mesma máquina, não como garantia.
 | `analyzeSmallJpeg` | JPEG 64x48 com EXIF e GPS | 44 µs | 49 KB |
 | `analyzeLargeJpeg` | JPEG 4000x3000 (~4 MB) | 32 µs | 44 KB |
 | `analyzeLargePng` | PNG 2000x1500 (~9 MB) | 1,2 ms | 58 KB |
-| `analyzeLargePngStream` | o mesmo PNG, como `InputStream` | 38 ms (alta variância) | 8,5 MB |
+| `analyzeLargePngStream` | o mesmo PNG, como `InputStream` | 3,1 ms | 8,5 MB |
 | `analyzePdf500Pages` | PDF com 500 páginas | 1,0 ms | 1,0 MB |
 
 Leituras:
@@ -35,9 +35,11 @@ Leituras:
 - **PNG** percorre o arquivo inteiro (texto pode vir depois dos dados da
   imagem), mas pula os dados com `skip`, sem copiá-los.
 - **PDF** lê a estrutura e a árvore de páginas, não o conteúdo.
-- **Streams** maiores que `spoolMemoryThreshold` passam pelo spool: os
-  primeiros 8 MiB ficam em memória e o resto vai para um arquivo
-  temporário. Daí a alocação e o tempo maiores, dominados pela cópia.
+- **Streams** são lidos sob demanda (ADR 0015): só o que o parser pede
+  sai do stream. Um JPEG como stream custa o mesmo que como arquivo. O
+  PNG lê o arquivo inteiro, e num stream os bytes ficam guardados para
+  poderem ser relidos: até 8 MiB em memória, o resto em arquivo
+  temporário. Antes da correção, o PNG como stream levava 38 ms.
 
 ## Limites padrão
 
@@ -45,7 +47,7 @@ Leituras:
 |---|---|---|
 | `maxFileSize` | 512 MiB | Acima disso, só o PNG ainda custaria tempo proporcional ao tamanho (cerca de 0,15 ms por MB) |
 | `maxDetectionBytes` | 8 KiB | Nenhum detector usa mais que 1 KiB (o do PDF procura o cabeçalho nos primeiros 1024 bytes). Era 64 KiB: reduzir cortou a alocação do `identify` de 135 KB para 20 KB |
-| `spoolMemoryThreshold` | 8 MiB | Cobre a maioria das fotos sem tocar o disco. Em servidores com muitos uploads simultâneos, reduza: cada stream acima do limiar segura esse tanto de memória durante a cópia |
+| `spoolMemoryThreshold` | 8 MiB | Quanto de um stream fica em memória antes de ir para disco. Só o que o parser lê é guardado: um JPEG guarda alguns KB; um PNG ou PDF pode chegar ao limiar. Em servidores com muitos uploads simultâneos, reduza |
 | `maxMetadataEntries` | 10.000 | JPEGs reais com MakerNotes ficam na casa das centenas de campos |
 | `maxValueLength` | 64 Ki caracteres | Textos longos (comentários, XMP em campos) cabem; valores maiores são truncados com aviso |
 | `maxBinaryValueBytes` | 64 KiB | Conteúdo binário só é guardado até esse tamanho; o tamanho real sempre é informado |

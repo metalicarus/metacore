@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /** Fonte apoiada num array em memória. O array não é copiado: quem cria não pode alterá-lo. */
 public final class ByteArrayInputSource implements InputSource {
@@ -33,8 +34,8 @@ public final class ByteArrayInputSource implements InputSource {
   }
 
   @Override
-  public long size() {
-    return length;
+  public OptionalLong size() {
+    return OptionalLong.of(length);
   }
 
   @Override

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /** Fonte apoiada num arquivo, lido sob demanda. */
 public final class PathInputSource implements InputSource {
@@ -33,8 +34,8 @@ public final class PathInputSource implements InputSource {
   }
 
   @Override
-  public long size() {
-    return size;
+  public OptionalLong size() {
+    return OptionalLong.of(size);
   }
 
   @Override

@@ -13,8 +13,7 @@ import br.com.genosha.metacore.internal.FileNames;
 import br.com.genosha.metacore.internal.ParserRegistry;
 import br.com.genosha.metacore.internal.PrimarySelector;
 import br.com.genosha.metacore.internal.io.PathInputSource;
-import br.com.genosha.metacore.internal.io.Spooler;
-import br.com.genosha.metacore.internal.io.Spooler.SpooledInput;
+import br.com.genosha.metacore.internal.io.StreamInputSource;
 import br.com.genosha.metacore.io.InputSource;
 import br.com.genosha.metacore.metadata.Metadata;
 import br.com.genosha.metacore.metadata.Warning;
@@ -34,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.ServiceLoader;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -91,13 +91,23 @@ public final class MetadataAnalyzer {
   }
 
   /**
-   * Identifica e extrai os metadados de um stream. O stream não é fechado.
+   * Identifica e extrai os metadados de um stream. O stream é lido sob demanda: só o que o parser
+   * precisa sai dele (ADR 0015). O stream não é fechado.
+   *
+   * <p>Como o stream pode não ser lido até o fim, o tamanho em {@link FileInfo#size()} pode ficar
+   * vazio, e {@code maxFileSize} limita quanto é lido, e não o tamanho total do stream.
    *
    * @param fileName nome declarado do conteúdo, usado só como evidência de extensão; pode ser nulo
    */
   public MetadataResult analyze(InputStream in, String fileName) {
-    try (SpooledInput spooled = spool(in, fileName)) {
-      return run(spooled.source());
+    Objects.requireNonNull(in, "in");
+    try (StreamInputSource source =
+        new StreamInputSource(
+            in,
+            Optional.ofNullable(fileName),
+            limits.spoolMemoryThreshold(),
+            limits.maxFileSize())) {
+      return run(source);
     }
   }
 
@@ -121,13 +131,12 @@ public final class MetadataAnalyzer {
 
   private MetadataResult run(InputSource source) {
     long start = System.nanoTime();
-    FileInfo file = fileInfo(source);
     DetectionResolver.Outcome outcome = resolver.resolve(detectionRequest(source));
     List<Warning> warnings = new ArrayList<>(outcome.warnings());
 
     if (outcome.result().isEmpty()) {
       return result(
-          file, outcome.result(), ExtractionStatus.UNKNOWN_FORMAT, List.of(), warnings, start);
+          source, outcome.result(), ExtractionStatus.UNKNOWN_FORMAT, List.of(), warnings, start);
     }
     DetectionResult detection = outcome.result().get();
     FileFormat format = detection.format();
@@ -139,7 +148,7 @@ public final class MetadataAnalyzer {
               WarningCode.NO_PARSER,
               "No metadata parser is registered for format '" + format.id() + "'"));
       return result(
-          file, outcome.result(), ExtractionStatus.UNSUPPORTED, List.of(), warnings, start);
+          source, outcome.result(), ExtractionStatus.UNSUPPORTED, List.of(), warnings, start);
     }
     MetadataParser parser = found.get();
 
@@ -149,6 +158,8 @@ public final class MetadataAnalyzer {
       parser.parse(source, context);
     } catch (AnalysisCancelledException e) {
       context.warn(WarningCode.CANCELLED, e.getMessage());
+    } catch (InputLimitExceededException e) {
+      throw e; // stream acima de maxFileSize: a entrada é recusada, como um arquivo grande demais
     } catch (IOException | RuntimeException | StackOverflowError e) {
       LOG.debug("Parser '{}' failed", parser.id(), e);
       failed = true;
@@ -168,18 +179,19 @@ public final class MetadataAnalyzer {
     } else {
       status = ExtractionStatus.SUCCESS;
     }
-    return result(file, outcome.result(), status, selection.metadata(), warnings, start);
+    return result(source, outcome.result(), status, selection.metadata(), warnings, start);
   }
 
+  /** O tamanho de streams só é conhecido depois da análise, por isso o FileInfo sai aqui. */
   private static MetadataResult result(
-      FileInfo file,
+      InputSource source,
       Optional<DetectionResult> detection,
       ExtractionStatus status,
       List<Metadata> metadata,
       List<Warning> warnings,
       long start) {
     Duration duration = Duration.ofNanos(System.nanoTime() - start);
-    return new MetadataResult(file, detection, status, metadata, warnings, duration);
+    return new MetadataResult(fileInfo(source), detection, status, metadata, warnings, duration);
   }
 
   private DetectionRequest detectionRequest(InputSource source) {
@@ -211,21 +223,12 @@ public final class MetadataAnalyzer {
     return source;
   }
 
-  private SpooledInput spool(InputStream in, String fileName) {
-    Objects.requireNonNull(in, "in");
-    try {
-      return Spooler.spool(
-          in, Optional.ofNullable(fileName), limits.spoolMemoryThreshold(), limits.maxFileSize());
-    } catch (IOException e) {
-      throw new InvalidInputException("Could not read input", e);
-    }
-  }
-
   private void checkSize(InputSource source) {
-    if (source.size() > limits.maxFileSize()) {
+    OptionalLong size = source.size();
+    if (size.isPresent() && size.getAsLong() > limits.maxFileSize()) {
       throw new InputLimitExceededException(
           "Input of "
-              + source.size()
+              + size.getAsLong()
               + " bytes exceeds maxFileSize of "
               + limits.maxFileSize()
               + " bytes");
@@ -236,7 +239,7 @@ public final class MetadataAnalyzer {
     return fileInfo(source.fileName(), source.size());
   }
 
-  private static FileInfo fileInfo(Optional<String> name, long size) {
+  private static FileInfo fileInfo(Optional<String> name, OptionalLong size) {
     return new FileInfo(name, size, name.flatMap(FileNames::extension));
   }
 

@@ -24,9 +24,12 @@ Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
   principal por chave, escolhido por precedência documentada.
 - Formatos com hierarquia de supertipos e resolução de conflitos entre
   detectores.
-- Limites de recursos (`AnalysisLimits`), spool de streams em memória ou
-  em arquivo temporário e cancelamento cooperativo por prazo ou
-  interrupção.
+- Limites de recursos (`AnalysisLimits`) e cancelamento cooperativo por
+  prazo ou interrupção.
+- `InputStream` lido sob demanda: só o que o parser precisa sai do
+  stream, guardado em memória até um limiar e em arquivo temporário
+  acima dele. O tamanho de `InputSource` e `FileInfo` é `OptionalLong`,
+  porque um stream só sabe o tamanho se for lido até o fim.
 - SPI para módulos de terceiros (`FormatDetector`, `MetadataParser`,
   `MetadataProvider`) e `metacore-testkit` com a suíte de contrato.
 

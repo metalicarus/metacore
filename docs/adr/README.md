@@ -13,7 +13,7 @@ apontam um para o outro.
 | [0004](0004-deteccao-e-resolucao.md) | Detecção e resolução de conflitos | Aceito |
 | [0005](0005-valores-tipados-e-precedencia.md) | Valores tipados, chaves com vários valores e precedência | Aceito |
 | [0006](0006-fronteira-excecao-resultado.md) | Fronteira entre exceção e resultado | Aceito |
-| [0007](0007-inputsource-e-spool.md) | InputSource e spool de streams | Aceito |
+| [0007](0007-inputsource-e-spool.md) | InputSource e spool de streams | Substituído por 0015 |
 | [0008](0008-cancelamento-cooperativo.md) | Cancelamento cooperativo | Aceito |
 | [0009](0009-modulo-testkit.md) | Módulo testkit | Aceito |
 | [0010](0010-parser-jpeg.md) | Parser JPEG | Aceito |
@@ -21,6 +21,7 @@ apontam um para o outro.
 | [0012](0012-parsers-png-e-pdf.md) | Parsers PNG e PDF | Aceito |
 | [0013](0013-release-0-1.md) | Release 0.1: publicação, distribuição e calibração | Aceito |
 | [0014](0014-relacao-com-o-tika.md) | Relação com o Apache Tika (resultado da Fase 0) | Aceito |
+| [0015](0015-stream-sob-demanda.md) | InputSource de stream sob demanda | Aceito |
 
 ## Modelo
 

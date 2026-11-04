@@ -90,7 +90,11 @@ final class JsonRenderer {
   private static ObjectNode file(FileInfo file, Optional<String> path) {
     ObjectNode node = NODES.objectNode();
     node.put("name", file.name().orElse(null));
-    node.put("size", file.size());
+    if (file.size().isPresent()) {
+      node.put("size", file.size().getAsLong());
+    } else {
+      node.putNull("size");
+    }
     node.put("extension", file.extension().orElse(null));
     path.ifPresent(p -> node.put("path", p));
     return node;

@@ -41,6 +41,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,10 @@ class MetadataAnalyzerTest {
         .containsExactly(Evidence.MAGIC, Evidence.EXTENSION);
     assertThat(result.file())
         .isEqualTo(
-            new FileInfo(Optional.of("photo.alp"), ALPHA_CONTENT.length, Optional.of("alp")));
+            new FileInfo(
+                Optional.of("photo.alp"),
+                OptionalLong.of(ALPHA_CONTENT.length),
+                Optional.of("alp")));
     assertThat(result.metadata())
         .hasSize(3)
         .extracting(Metadata::source)
@@ -270,6 +274,66 @@ class MetadataAnalyzerTest {
   }
 
   @Test
+  void streamsAreReadOnlyAsFarAsTheParserNeeds() {
+    byte[] large = new byte[1 << 20];
+    System.arraycopy(ALPHA_CONTENT, 0, large, 0, ALPHA_CONTENT.length);
+    CountingStream in = new CountingStream(new ByteArrayInputStream(large));
+    MetadataAnalyzer analyzer =
+        analyzer(
+            alphaProvider(
+                (source, context) -> {
+                  try (InputStream header = source.openStream()) {
+                    context.emit(
+                        MetadataEntry.raw(
+                            "ALPHA", "Header", MetadataValue.of(header.readNBytes(4).length)));
+                  }
+                }));
+
+    MetadataResult result = analyzer.analyze(in, "big.alp");
+
+    assertThat(result.status()).isEqualTo(ExtractionStatus.SUCCESS);
+    assertThat(in.consumed).isLessThan(large.length);
+    assertThat(result.file().size()).isEmpty();
+  }
+
+  @Test
+  void streamSizeIsKnownWhenTheParserReadsEverything() {
+    MetadataAnalyzer analyzer =
+        analyzer(
+            alphaProvider(
+                (source, context) -> {
+                  try (InputStream all = source.openStream()) {
+                    all.readAllBytes();
+                  }
+                }));
+
+    MetadataResult result = analyzer.analyze(new ByteArrayInputStream(ALPHA_CONTENT), "a.alp");
+
+    assertThat(result.file().size()).hasValue(ALPHA_CONTENT.length);
+  }
+
+  @Test
+  void streamAboveMaxFileSizeIsRejectedWhenReadBeyondTheLimit() {
+    MetadataAnalyzer analyzer =
+        MetadataAnalyzer.builder()
+            .discoverProviders(false)
+            .limits(AnalysisLimits.defaults().withMaxFileSize(100_000))
+            .addProvider(
+                alphaProvider(
+                    (source, context) -> {
+                      try (InputStream all = source.openStream()) {
+                        all.readAllBytes();
+                      }
+                    }))
+            .build();
+    byte[] large = new byte[200_000];
+    System.arraycopy(ALPHA_CONTENT, 0, large, 0, ALPHA_CONTENT.length);
+
+    assertThatThrownBy(() -> analyzer.analyze(new ByteArrayInputStream(large), "a.alp"))
+        .isInstanceOf(InputLimitExceededException.class);
+  }
+
+  @Test
   void streamNameIsOptional() {
     MetadataResult result =
         analyzer(alphaProvider(WIDTHS)).analyze(new ByteArrayInputStream(ALPHA_CONTENT), null);
@@ -413,6 +477,23 @@ class MetadataAnalyzerTest {
 
   private Path write(String name, byte[] content) throws IOException {
     return Files.write(dir.resolve(name), content);
+  }
+
+  private static final class CountingStream extends FilterInputStream {
+    long consumed;
+
+    CountingStream(InputStream in) {
+      super(in);
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+      int count = super.read(b, off, len);
+      if (count > 0) {
+        consumed += count;
+      }
+      return count;
+    }
   }
 
   private static final class CloseTrackingStream extends FilterInputStream {

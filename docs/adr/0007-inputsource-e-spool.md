@@ -1,6 +1,6 @@
 # 0007. InputSource e spool de streams
 
-- Estado: Aceito
+- Estado: Substituído por [0015](0015-stream-sob-demanda.md)
 - Data: 2026-11-01
 
 ## Contexto

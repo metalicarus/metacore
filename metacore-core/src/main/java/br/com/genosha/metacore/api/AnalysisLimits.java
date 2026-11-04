@@ -8,9 +8,10 @@ import java.util.Optional;
  * Limites de recursos de uma análise. Os valores padrão e as medições que os embasam estão em
  * {@code docs/performance.md}.
  *
- * @param maxFileSize tamanho máximo aceito, em bytes
+ * @param maxFileSize tamanho máximo aceito, em bytes; para streams, quanto pode ser lido
  * @param maxDetectionBytes bytes lidos do início para detecção
- * @param spoolMemoryThreshold até quantos bytes um {@code InputStream} fica em memória
+ * @param spoolMemoryThreshold quanto do que foi lido de um {@code InputStream} fica em memória; o
+ *     resto vai para um arquivo temporário
  * @param maxMetadataEntries número máximo de campos por resultado
  * @param maxValueLength tamanho máximo de um valor de texto, em caracteres
  * @param maxBinaryValueBytes tamanho máximo do conteúdo guardado de um valor binário

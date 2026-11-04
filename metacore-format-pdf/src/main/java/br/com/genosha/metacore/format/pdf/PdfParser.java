@@ -129,7 +129,7 @@ public final class PdfParser implements MetadataParser {
     try (SeekableByteChannel channel = source.openChannel();
         PDDocument document =
             Loader.loadPDF(
-                new ChannelRandomAccessRead(channel, source.size()),
+                new ChannelRandomAccessRead(channel, channel.size()),
                 "",
                 IOUtils.createMemoryOnlyStreamCache())) {
       context.checkCancelled();
@@ -272,10 +272,11 @@ public final class PdfParser implements MetadataParser {
   }
 
   private static boolean hasEofMarker(InputSource source) throws IOException {
-    long size = source.size();
-    int tail = (int) Math.min(size, EOF_SEARCH);
-    ByteBuffer buffer = ByteBuffer.allocate(tail);
+    ByteBuffer buffer;
     try (SeekableByteChannel channel = source.openChannel()) {
+      long size = channel.size();
+      int tail = (int) Math.min(size, EOF_SEARCH);
+      buffer = ByteBuffer.allocate(tail);
       channel.position(size - tail);
       while (buffer.hasRemaining() && channel.read(buffer) != -1) {
         // lê o final do arquivo

@@ -110,7 +110,7 @@ Destaques:
 - **Sem parser**: o Tika usa o `EmptyParser` em silêncio; o MetaCore
   separa `UNSUPPORTED` de `UNKNOWN_FORMAT`.
 
-### H4. Leveza: confirmada para arquivos, refutada para streams grandes
+### H4. Leveza: confirmada (depois de corrigir o spool de streams)
 
 | | MetaCore (core, image, pdf) | Tika (core, image, pdf) |
 |---|---|---|
@@ -121,25 +121,29 @@ Destaques:
 
 | Entrada | Origem | MetaCore tempo | MetaCore alocação | Tika tempo | Tika alocação |
 |---|---|---|---|---|---|
-| JPEG 64x48 com EXIF e GPS | stream | 29 µs | 72 KB | 128 µs | 209 KB |
-| JPEG 64x48 com EXIF e GPS | arquivo | 48 µs | 48 KB | 206 µs | 134 KB |
-| JPEG 4000x3000 (~4 MB) | stream | 2,9 ms | 13,8 MB | 174 µs | 551 KB |
-| JPEG 4000x3000 (~4 MB) | arquivo | 34 µs | 44 KB | 272 µs | 542 KB |
-| PNG 2000x1500 (~9 MB) | stream | 36,1 ms | 16,1 MB | 20,5 ms | 563 KB |
-| PNG 2000x1500 (~9 MB) | arquivo | 1,1 ms | 56 KB | 2,2 ms | 561 KB |
-| PDF com 500 páginas | stream | 1,3 ms | 1006 KB | 3,6 ms | 4,3 MB |
-| PDF com 500 páginas | arquivo | 1,3 ms | 979 KB | 3,8 ms | 4,3 MB |
+| JPEG 64x48 com EXIF e GPS | stream | 30 µs | 71 KB | 134 µs | 208 KB |
+| JPEG 64x48 com EXIF e GPS | arquivo | 50 µs | 48 KB | 222 µs | 134 KB |
+| JPEG 4000x3000 (~4 MB) | stream | 18 µs | 58 KB | 202 µs | 551 KB |
+| JPEG 4000x3000 (~4 MB) | arquivo | 37 µs | 44 KB | 265 µs | 542 KB |
+| PNG 2000x1500 (~9 MB) | stream | 2,6 ms | 8,1 MB | 22,0 ms | 563 KB |
+| PNG 2000x1500 (~9 MB) | arquivo | 1,2 ms | 56 KB | 2,5 ms | 561 KB |
+| PDF com 500 páginas | stream | 1,5 ms | 1,0 MB | 3,9 ms | 4,3 MB |
+| PDF com 500 páginas | arquivo | 1,4 ms | 979 KB | 3,4 ms | 4,3 MB |
 
-- **A partir de arquivo**, o MetaCore é de 2 a 8 vezes mais rápido e
-  aloca de 3 a 12 vezes menos em todas as entradas.
-- **A partir de `InputStream`**, o MetaCore perde nas entradas grandes:
-  o spool copia o stream inteiro antes da análise (até
-  `spoolMemoryThreshold` em memória, o resto em disco), mesmo quando o
-  parser só precisa do começo do arquivo, como no JPEG. O Tika lê o
-  stream sob demanda. É uma falha de projeto do MetaCore, não um custo
-  inerente; ver as ações abaixo.
+- O MetaCore é mais rápido em todas as entradas, de arquivo ou de
+  stream: de 2 a 11 vezes.
+- Aloca menos em quase todas, de 3 a 12 vezes. A exceção é o PNG grande
+  como stream (8,1 MB contra 563 KB): o PNG é lido até o fim e, num
+  stream, os bytes ficam guardados até `spoolMemoryThreshold` para
+  poderem ser relidos.
 - No PDF, parte da diferença vem de o Tika extrair também o texto das
   páginas, que o MetaCore não lê.
+
+**Primeira medição, antes da correção.** O spool antigo copiava o
+stream inteiro antes da análise, e o MetaCore perdia nas entradas
+grandes como stream: JPEG de 4 MB em 2,9 ms e 13,8 MB (Tika: 174 µs e
+551 KB) e PNG de 9 MB em 36 ms e 16,1 MB (Tika: 20,5 ms). A Fase 0
+apontou o problema e ele foi corrigido antes da publicação (ADR 0015).
 
 ## Onde o Tika é melhor
 
@@ -158,9 +162,10 @@ Destaques:
 ## Conclusão
 
 Pelo critério do blueprint, que pede ao menos H1 e H2 confirmadas, o
-MetaCore **segue como projeto independente**. H1 e H3 são os
-diferenciais fortes; H2 se confirma de forma mais modesta; H4 vale para
-arquivos e exige correção para streams.
+MetaCore **segue como projeto independente**. H1, H3 e H4 são os
+diferenciais fortes; H2 se confirma de forma mais modesta. H4 só se
+confirmou por inteiro depois de corrigir o spool de streams, que a
+própria comparação revelou.
 
 O posicionamento correto não é "alternativa ao Tika", e sim:
 **metadados tipados, com origem e com estado explícito, para poucos
@@ -170,13 +175,9 @@ escolha.
 
 ## Ações
 
-1. **Antes de publicar o 0.1.0**: corrigir o spool de streams para ler
-   sob demanda, gravando só o que os parsers consomem e copiando tudo
-   apenas quando um parser pede acesso aleatório (PDF). Isso afeta o
-   contrato de `InputSource.size()` e de `FileInfo.size` para streams e
-   por isso deve entrar antes da API ser publicada.
-2. Ajustar o README com o posicionamento acima e um resumo desta
-   comparação.
+1. ~~Antes de publicar o 0.1.0: corrigir o spool de streams para ler
+   sob demanda.~~ Feito no ADR 0015.
+2. ~~Ajustar o README com o posicionamento acima.~~ Feito.
 3. Depois do 0.1: avaliar um módulo opcional que use o detector do
    `tika-core` (cerca de 1 MB) para ampliar a identificação sem trazer
    os parsers do Tika.
