@@ -129,7 +129,6 @@ Comandos úteis:
 | `mvn spotless:apply` | Formata o código (google-java-format) |
 | `mvn -Psecurity verify` | Roda o OWASP Dependency-Check; defina `NVD_API_KEY` para acelerar |
 | `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s (`PngFuzzTest` para PNG; `-pl metacore-format-pdf` e `PdfFuzzTest` para PDF) |
-
 | `java -jar metacore-benchmarks/target/benchmarks.jar -prof gc` | Benchmarks (depois de `mvn package -pl metacore-benchmarks -am -DskipTests`) |
 
 O relatório de cobertura do JaCoCo fica em
