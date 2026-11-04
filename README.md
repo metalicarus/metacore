@@ -4,9 +4,8 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** versão 0.1.0 pronta para publicação, ainda não publicada
-> no Maven Central. Suporta JPEG, PNG e PDF. O plano completo está em
-> [docs/blueprint.md](docs/blueprint.md).
+> **Estado:** versão 0.1.0. Suporta JPEG, PNG e PDF. O plano completo
+> está em [docs/blueprint.md](docs/blueprint.md).
 
 ## Quando usar o MetaCore (e quando usar o Tika)
 
@@ -22,7 +21,7 @@ o Tika. A comparação detalhada, com os mesmos arquivos nos dois, está em
 
 ## Instalação
 
-Depois da publicação no Maven Central:
+Disponível no Maven Central:
 
 ```xml
 <dependencyManagement>

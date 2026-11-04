@@ -5,7 +5,7 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 Enquanto a versão for 0.x, versões minor podem trazer mudanças
 incompatíveis, sempre registradas aqui.
 
-## [0.1.0] - a definir
+## [0.1.0] - 2026-11-04
 
 Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
 
