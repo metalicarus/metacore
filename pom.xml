@@ -47,6 +47,7 @@
     <module>metacore-testkit</module>
     <module>metacore-format-image</module>
     <module>metacore-format-pdf</module>
+    <module>metacore-isolation</module>
     <module>metacore-cli</module>
     <module>metacore-examples</module>
     <module>metacore-benchmarks</module>

@@ -22,6 +22,7 @@ apontam um para o outro.
 | [0013](0013-release-0-1.md) | Release 0.1: publicação, distribuição e calibração | Aceito |
 | [0014](0014-relacao-com-o-tika.md) | Relação com o Apache Tika (resultado da Fase 0) | Aceito |
 | [0015](0015-stream-sob-demanda.md) | InputSource de stream sob demanda | Aceito |
+| [0016](0016-isolamento-em-processo.md) | Análise isolada em processo separado | Aceito |
 
 ## Modelo
 

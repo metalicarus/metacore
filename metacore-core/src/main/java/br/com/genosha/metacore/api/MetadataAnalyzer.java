@@ -9,7 +9,6 @@ import br.com.genosha.metacore.format.FormatRegistry;
 import br.com.genosha.metacore.internal.DefaultParseContext;
 import br.com.genosha.metacore.internal.DetectionResolver;
 import br.com.genosha.metacore.internal.Failures;
-import br.com.genosha.metacore.internal.FileNames;
 import br.com.genosha.metacore.internal.ParserRegistry;
 import br.com.genosha.metacore.internal.PrimarySelector;
 import br.com.genosha.metacore.internal.io.PathInputSource;
@@ -236,11 +235,7 @@ public final class MetadataAnalyzer {
   }
 
   private static FileInfo fileInfo(InputSource source) {
-    return fileInfo(source.fileName(), source.size());
-  }
-
-  private static FileInfo fileInfo(Optional<String> name, OptionalLong size) {
-    return new FileInfo(name, size, name.flatMap(FileNames::extension));
+    return FileInfo.of(source.fileName(), source.size());
   }
 
   /** Construtor de {@link MetadataAnalyzer}. */

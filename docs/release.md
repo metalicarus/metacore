@@ -98,6 +98,7 @@ git push origin main v0.1.0
 | `metacore-testkit` | sim | |
 | `metacore-format-image` (e o `test-jar` com as fixtures) | sim | |
 | `metacore-format-pdf` (e o `test-jar`) | sim | |
+| `metacore-isolation` | sim | |
 | `metacore-cli` (JAR) | sim | |
 | Executável da CLI (jpackage) | | sim |
 | `metacore-examples`, `metacore-benchmarks` | não | |

@@ -46,11 +46,12 @@ final class CommonOptions {
   boolean strict;
 
   MetadataAnalyzer analyzer() {
+    return MetadataAnalyzer.builder().limits(limits()).build();
+  }
+
+  AnalysisLimits limits() {
     AnalysisLimits limits = AnalysisLimits.defaults();
-    if (maxFileSize != null) {
-      limits = limits.withMaxFileSize(maxFileSize);
-    }
-    return MetadataAnalyzer.builder().limits(limits).build();
+    return maxFileSize == null ? limits : limits.withMaxFileSize(maxFileSize);
   }
 
   /** Destino da saída: o arquivo de {@code --file} ou a saída padrão da linha de comando. */

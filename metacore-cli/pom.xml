@@ -153,8 +153,12 @@
                 </goals>
                 <configuration>
                   <executable>${java.home}/bin/jpackage</executable>
-                  <!-- commandlineArgs aceita aspas, inclusive com caminhos do Windows. -->
-                  <commandlineArgs>--type app-image --name metacore --app-version ${dist.version} --vendor Genosha --input "${dist.input}" --main-jar ${project.build.finalName}.jar --main-class br.com.genosha.metacore.cli.MetacoreCli --add-modules ${dist.modules} --jlink-options "--strip-debug --no-header-files --no-man-pages --strip-native-commands --compress=zip-6" --app-content "${project.basedir}/../LICENSE,${project.basedir}/../NOTICE" --dest "${dist.output}" ${dist.platform.options}</commandlineArgs>
+                  <!--
+                    commandlineArgs aceita aspas, inclusive com caminhos do Windows. O jlink não
+                    remove os comandos nativos: o runtime precisa de bin/java para os workers da
+                    análise isolada (ADR 0016).
+                  -->
+                  <commandlineArgs>--type app-image --name metacore --app-version ${dist.version} --vendor Genosha --input "${dist.input}" --main-jar ${project.build.finalName}.jar --main-class br.com.genosha.metacore.cli.MetacoreCli --add-modules ${dist.modules} --jlink-options "--strip-debug --no-header-files --no-man-pages --compress=zip-6" --app-content "${project.basedir}/../LICENSE,${project.basedir}/../NOTICE" --dest "${dist.output}" ${dist.platform.options}</commandlineArgs>
                 </configuration>
               </execution>
             </executions>
@@ -205,6 +209,11 @@
     <dependency>
       <groupId>br.com.genosha</groupId>
       <artifactId>metacore-format-pdf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-isolation</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

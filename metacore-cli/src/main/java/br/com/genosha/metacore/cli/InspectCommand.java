@@ -1,13 +1,15 @@
 package br.com.genosha.metacore.cli;
 
 import br.com.genosha.metacore.api.ExtractionStatus;
-import br.com.genosha.metacore.api.MetadataAnalyzer;
 import br.com.genosha.metacore.api.MetadataResult;
 import br.com.genosha.metacore.cli.CommonOptions.Output;
 import br.com.genosha.metacore.exception.MetaCoreException;
+import br.com.genosha.metacore.isolation.IsolatedAnalyzer;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -32,6 +34,27 @@ final class InspectCommand implements Callable<Integer> {
       description = "Include binary values as base64 in JSON output (up to 64 KiB each).")
   boolean includeBinary;
 
+  @Option(
+      names = "--isolate",
+      description =
+          "Analyze in a separate worker process, which can be killed on timeout or crash"
+              + " without stopping the command.")
+  boolean isolate;
+
+  @Option(
+      names = "--timeout",
+      paramLabel = "DURATION",
+      converter = DurationConverter.class,
+      description = "Hard limit per file, e.g. 10s or 2m (default: 30s). Implies --isolate.")
+  Duration timeout;
+
+  @Option(
+      names = "--max-memory",
+      paramLabel = "SIZE",
+      converter = DataSizeConverter.class,
+      description = "Heap of the worker process, e.g. 256M (default: 512M). Implies --isolate.")
+  Long maxMemory;
+
   @Spec CommandSpec spec;
 
   static final class DetailOptions {
@@ -48,21 +71,45 @@ final class InspectCommand implements Callable<Integer> {
 
   @Override
   public Integer call() throws Exception {
-    MetadataAnalyzer analyzer = options.analyzer();
     JsonRenderer json = new JsonRenderer(includeBinary);
     int exit = ExitCodes.OK;
-    try (Output out = options.openOutput(spec)) {
+    try (Engine engine = engine();
+        Output out = options.openOutput(spec)) {
       for (Path file : options.files) {
-        exit = ExitCodes.worst(exit, inspect(analyzer, json, out, file));
+        exit = ExitCodes.worst(exit, inspect(engine, json, out, file));
       }
     }
     return exit;
   }
 
-  private int inspect(MetadataAnalyzer analyzer, JsonRenderer json, Output out, Path file) {
+  /** Análise no próprio processo ou em workers (ADR 0016). */
+  private record Engine(Function<Path, MetadataResult> analyzer, Runnable closer)
+      implements AutoCloseable {
+    @Override
+    public void close() {
+      closer.run();
+    }
+  }
+
+  private Engine engine() {
+    if (!isolate && timeout == null && maxMemory == null) {
+      return new Engine(options.analyzer()::analyze, () -> {});
+    }
+    IsolatedAnalyzer.Builder builder = IsolatedAnalyzer.builder().limits(options.limits());
+    if (timeout != null) {
+      builder.timeout(timeout);
+    }
+    if (maxMemory != null) {
+      builder.maxHeapSize(maxMemory);
+    }
+    IsolatedAnalyzer analyzer = builder.build();
+    return new Engine(analyzer::analyze, analyzer::close);
+  }
+
+  private int inspect(Engine engine, JsonRenderer json, Output out, Path file) {
     MetadataResult result;
     try {
-      result = analyzer.analyze(file);
+      result = engine.analyzer().apply(file);
     } catch (MetaCoreException e) {
       Failures.report(spec, options, json, out, file, e);
       return ExitCodes.FAILURE;

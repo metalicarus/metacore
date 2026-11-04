@@ -1,5 +1,6 @@
 package br.com.genosha.metacore.api;
 
+import br.com.genosha.metacore.internal.FileNames;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -20,5 +21,10 @@ public record FileInfo(Optional<String> name, OptionalLong size, Optional<String
     if (size.isPresent() && size.getAsLong() < 0) {
       throw new IllegalArgumentException("Size must not be negative");
     }
+  }
+
+  /** Informações com a extensão calculada a partir do nome. */
+  public static FileInfo of(Optional<String> name, OptionalLong size) {
+    return new FileInfo(name, size, name.flatMap(FileNames::extension));
   }
 }
