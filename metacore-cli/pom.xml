@@ -72,6 +72,9 @@
         <dist.modules>java.base,java.desktop,java.logging,java.naming,java.sql,java.xml,jdk.charsets</dist.modules>
         <dist.input>${project.build.directory}/jpackage-input</dist.input>
         <dist.output>${project.build.directory}/dist</dist.output>
+        <!-- LICENSE e NOTICE entram pelo app-content; o perfil dist-mac os copia para o input. -->
+        <dist.app.content>--app-content "${project.basedir}/../LICENSE,${project.basedir}/../NOTICE"</dist.app.content>
+        <dist.legal.skip>true</dist.legal.skip>
       </properties>
       <build>
         <plugins>
@@ -151,6 +154,26 @@
                   </resources>
                 </configuration>
               </execution>
+              <execution>
+                <id>copy-legal</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <skip>${dist.legal.skip}</skip>
+                  <outputDirectory>${dist.input}</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/..</directory>
+                      <includes>
+                        <include>LICENSE</include>
+                        <include>NOTICE</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -171,7 +194,7 @@
                     remove os comandos nativos: o runtime precisa de bin/java para os workers da
                     análise isolada (ADR 0016).
                   -->
-                  <commandlineArgs>--type app-image --name metacore --app-version ${dist.version} --vendor Genosha --input "${dist.input}" --main-jar ${project.build.finalName}.jar --main-class br.com.genosha.metacore.cli.MetacoreCli --add-modules ${dist.modules} --jlink-options "--strip-debug --no-header-files --no-man-pages --compress=zip-6" --app-content "${project.basedir}/../LICENSE,${project.basedir}/../NOTICE" --dest "${dist.output}" ${dist.platform.options}</commandlineArgs>
+                  <commandlineArgs>--type app-image --name metacore --app-version ${dist.version} --vendor Genosha --input "${dist.input}" --main-jar ${project.build.finalName}.jar --main-class br.com.genosha.metacore.cli.MetacoreCli --add-modules ${dist.modules} --jlink-options "--strip-debug --no-header-files --no-man-pages --compress=zip-6" ${dist.app.content} --dest "${dist.output}" ${dist.platform.options}</commandlineArgs>
                 </configuration>
               </execution>
             </executions>
@@ -193,7 +216,8 @@
     </profile>
     <!--
       No macOS, o jpackage recusa versões que começam com zero. O número vale só para o
-      Info.plist do pacote; a CLI informa a própria versão a partir do JAR.
+      Info.plist do pacote; a CLI informa a própria versão a partir do JAR. O codesign
+      recusa arquivos soltos em Contents/, então LICENSE e NOTICE vão para Contents/app.
     -->
     <profile>
       <id>dist-mac</id>
@@ -204,6 +228,8 @@
       </activation>
       <properties>
         <dist.version>1.0.0</dist.version>
+        <dist.app.content />
+        <dist.legal.skip>false</dist.legal.skip>
       </properties>
     </profile>
   </profiles>
