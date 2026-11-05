@@ -3,6 +3,7 @@ package br.com.genosha.metacore.cli;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.genosha.metacore.format.image.fixtures.JpegFixtures;
+import br.com.genosha.metacore.format.office.OfficeFixtures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
@@ -375,6 +376,22 @@ class MetacoreCliTest {
     assertThat(CliRun.run(photo.toString()).out()).doesNotContain("\u001b[");
     assertThat(CliRun.run("--color", "always", photo.toString()).out()).contains("\u001b[32m");
     assertThat(CliRun.run("--color", "never", photo.toString()).out()).doesNotContain("\u001b[");
+  }
+
+  @Test
+  void inspectsOfficeDocuments() throws IOException {
+    Path docx = Files.write(dir.resolve("report.docx"), OfficeFixtures.docx());
+
+    CliRun run = CliRun.run(docx.toString());
+
+    assertThat(run.exitCode()).isZero();
+    assertThat(run.out())
+        .contains(
+            "report.docx", "DOCX", "Document", "Relatório anual", "Last modified by", "Revisor");
+    assertThat(CliRun.run("-o", "csv", "-k", "document.page_count", docx.toString()).outLines())
+        .containsExactly(
+            "file,format,mime_type,status,warnings,error,document.page_count",
+            "report.docx,docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,SUCCESS,0,,3");
   }
 
   @Test

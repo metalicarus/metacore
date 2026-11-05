@@ -5,6 +5,8 @@
 | JPEG | `metacore-format-image` | `FF D8 FF` (+ marcador válido) | Estrutura (SOF), JFIF, EXIF (IFD0, SubIFD, IFD1, GPS), XMP, IPTC, ICC, Photoshop, Huffman e demais segmentos do metadata-extractor |
 | PNG | `metacore-format-image` | Assinatura de 8 bytes (+ IHDR) | IHDR, texto (`tEXt`, `zTXt`, `iTXt`), EXIF (`eXIf`), XMP, ICC (`iCCP`), `tIME`, `pHYs`, `gAMA` e demais chunks auxiliares |
 | PDF | `metacore-format-pdf` | `%PDF-` no início ou nos primeiros 1024 bytes | Versão, número de páginas, criptografia, dicionário Info completo e XMP do catálogo |
+| DOCX, XLSX, PPTX | `metacore-format-office` | Assinatura ZIP + content type da parte principal (ou nome dela) | Propriedades `core`, `app` e `custom`, content type, presença de macros |
+| ZIP | `metacore-format-office` | `PK\3\4` ou `PK\5\6` | Número de entradas, tamanho declarado, comentário, entradas criptografadas |
 
 As chaves normalizadas e a precedência entre fontes estão em
 [keys.md](keys.md).
@@ -23,8 +25,8 @@ As chaves normalizadas e a precedência entre fontes estão em
   `spoolMemoryThreshold` em memória e o resto em arquivo temporário.
   Para streams, o tamanho (`FileInfo.size`) só é conhecido se o parser
   leu até o fim, e `maxFileSize` limita quanto é lido.
-- Formatos sem parser (por exemplo ZIP, se um detector de terceiros o
-  reconhecer) terminam em `UNSUPPORTED`; formatos desconhecidos, em
+- Formatos sem parser (reconhecidos por um detector de terceiros, por
+  exemplo) terminam em `UNSUPPORTED`; formatos desconhecidos, em
   `UNKNOWN_FORMAT`.
 - Os módulos publicam `Automatic-Module-Name`, mas ainda não têm
   `module-info.java` (ADR 0003).
@@ -53,8 +55,22 @@ As chaves normalizadas e a precedência entre fontes estão em
 - Metadados de páginas, anexos, formulários e assinaturas digitais não
   são extraídos.
 
+### Office e ZIP
+
+- O conteúdo dos documentos (texto, células, slides) não é lido, só as
+  propriedades.
+- Documentos protegidos por senha e os formatos binários antigos
+  (`.doc`, `.xls`, `.ppt`) são contêineres OLE2 e ainda não são
+  reconhecidos.
+- ZIP64 não é suportado: a análise termina em `FAILED`.
+- Partes acima de `maxDecompressedTextBytes` são puladas com aviso
+  `LIMIT_REACHED`.
+- Quando `[Content_Types].xml` não está no início do arquivo, como nos
+  documentos grandes do LibreOffice, a detecção usa o nome da parte
+  principal e tem confiança `HIGH` em vez de `EXACT`.
+- JAR, EPUB e ODF saem como `zip`.
+
 ### CLI
 
-- Diretórios não são percorridos (sem `--recursive` por enquanto).
 - O executável tem cerca de 67 MB e leva perto de 0,8 s por execução,
   quase tudo de inicialização da JVM.

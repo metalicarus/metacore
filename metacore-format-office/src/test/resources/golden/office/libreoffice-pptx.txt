@@ -1,0 +1,24 @@
+status: SUCCESS
+format: pptx
+metadata:
+    - | ZIP | Entries | INTEGER | 21
+    - | ZIP | Uncompressed Size | INTEGER | 30026
+    - | OOXML | Content Type | TEXT | application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml
+    - | OOXML | Macros | BOOLEAN | false
+  * document.created | OOXML:Core | dcterms:created | OFFSET_DATE_TIME | 2026-07-14T16:32:05Z
+  * document.author | OOXML:Core | dc:creator | TEXT | Genosha
+    - | OOXML:Core | dc:description | TEXT | Arquivo de teste do MetaCore
+  * document.keywords | OOXML:Core | cp:keywords | LIST | [office metadados]
+    - | OOXML:Core | dc:language | TEXT | pt-BR
+  * document.last_modified_by | OOXML:Core | cp:lastModifiedBy | TEXT | Revisor
+  * document.modified | OOXML:Core | dcterms:modified | OFFSET_DATE_TIME | 2026-08-01T09:00:00Z
+    - | OOXML:Core | cp:revision | TEXT | 0
+  * document.subject | OOXML:Core | dc:subject | TEXT | Metadados
+  * document.title | OOXML:Core | dc:title | TEXT | Relatório anual
+    - | OOXML:App | TotalTime | INTEGER | 0
+  * document.producer | OOXML:App | Application | TEXT | LibreOffice/24.2.7.2$Linux_X86_64 LibreOffice_project/420$Build-2
+    - | OOXML:App | AppVersion | TEXT | 15.0000
+    - | OOXML:Custom | Aprovado | BOOLEAN | true
+    - | OOXML:Custom | Projeto | TEXT | MetaCore
+    - | OOXML:Custom | Versão | DECIMAL | 2
+warnings:

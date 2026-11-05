@@ -226,6 +226,11 @@
     </dependency>
     <dependency>
       <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-office</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
       <artifactId>metacore-isolation</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -246,6 +251,13 @@
     <dependency>
       <groupId>br.com.genosha</groupId>
       <artifactId>metacore-format-image</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-office</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>

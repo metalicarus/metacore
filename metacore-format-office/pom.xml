@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-parent</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>metacore-format-office</artifactId>
+  <name>MetaCore Format: Office</name>
+  <description>Detector e parser de ZIP e de documentos Office Open XML (DOCX, XLSX, PPTX).</description>
+
+  <properties>
+    <module.name>br.com.genosha.metacore.format.office</module.name>
+  </properties>
+
+  <build>
+    <plugins>
+      <!-- Publica as fixtures (OfficeFixtures) para outros módulos de teste. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Só o core: ZIP e XML vêm do JDK (ADR 0018). -->
+  <dependencies>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-testkit</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.code-intelligence</groupId>
+      <artifactId>jazzer-junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

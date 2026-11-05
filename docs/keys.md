@@ -37,6 +37,7 @@ Vocabulário versão **1** (`MetadataKeys.VERSION`, publicado como
 | `location.longitude` | `DECIMAL` | Graus decimais, oeste negativo, 7 casas |
 | `document.title` | `TEXT` | Título |
 | `document.author` | `TEXT` | Autor |
+| `document.last_modified_by` | `TEXT` | Quem salvou o documento pela última vez |
 | `document.subject` | `TEXT` | Assunto |
 | `document.keywords` | `LIST` | Palavras-chave |
 | `document.creator` | `TEXT` | Aplicativo que criou o documento |
@@ -64,6 +65,11 @@ informações já saem em `detection` e `file` no resultado.
 | `PDF` | Estrutura do PDF: versão, páginas, criptografia |
 | `PDF:Info` | Dicionário Info do PDF |
 | `XMP` | Propriedades XMP; `rawName` é o caminho, por exemplo `tiff:Make` ou `dc:title[1]` |
+| `ZIP` | Estrutura do ZIP: entradas, tamanho declarado, comentário |
+| `OOXML` | Pacote OOXML: content type da parte principal, macros |
+| `OOXML:Core` | `docProps/core.xml`; `rawName` com prefixo canônico, por exemplo `dc:title` |
+| `OOXML:App` | `docProps/app.xml`, por exemplo `Pages` ou `TitlesOfParts` |
+| `OOXML:Custom` | `docProps/custom.xml`; `rawName` é o nome da propriedade |
 | outros | Nome do diretório no metadata-extractor (`ICC Profile`, `IPTC`, `Huffman`...) |
 
 ## Precedência por formato
@@ -117,3 +123,21 @@ deprecia o Info, a ordem se inverte.
 | `document.format_version` | `PDF` Version | |
 
 O mapeamento está em `metacore-format-pdf/.../PdfParser.java`.
+
+### Office (DOCX, XLSX, PPTX)
+
+Cada chave tem uma só fonte.
+
+| Chave | Fonte |
+|---|---|
+| `document.title` | `OOXML:Core` dc:title |
+| `document.author` | `OOXML:Core` dc:creator |
+| `document.subject` | `OOXML:Core` dc:subject |
+| `document.keywords` | `OOXML:Core` cp:keywords (separadas por `,` ou `;`) |
+| `document.last_modified_by` | `OOXML:Core` cp:lastModifiedBy |
+| `document.created` | `OOXML:Core` dcterms:created |
+| `document.modified` | `OOXML:Core` dcterms:modified |
+| `document.producer` | `OOXML:App` Application |
+| `document.page_count` | `OOXML:App` Pages (Word) ou Slides (PowerPoint) |
+
+O mapeamento está em `metacore-format-office/.../OoxmlParser.java`.

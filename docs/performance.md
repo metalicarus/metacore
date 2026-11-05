@@ -75,7 +75,7 @@ em arquivos pequenos; quem precisa de vazão usa `workers(n)`.
 | `maxMetadataEntries` | 10.000 | JPEGs reais com MakerNotes ficam na casa das centenas de campos |
 | `maxValueLength` | 64 Ki caracteres | Textos longos (comentários, XMP em campos) cabem; valores maiores são truncados com aviso |
 | `maxBinaryValueBytes` | 64 KiB | Conteúdo binário só é guardado até esse tamanho; o tamanho real sempre é informado |
-| `maxDecompressedTextBytes` | 1 MiB | Teto para texto compactado (PNG `zTXt`/`iTXt`) e para o pacote XMP do PDF. XMP com histórico extenso do Photoshop pode passar disso; aumente se precisar |
+| `maxDecompressedTextBytes` | 1 MiB | Teto para texto compactado (PNG `zTXt`/`iTXt`), para o pacote XMP do PDF e para cada parte XML de um pacote Office. XMP com histórico extenso do Photoshop pode passar disso; aumente se precisar |
 | `maxAnalysisTime` | sem limite | Verificação cooperativa (ADR 0008); defina em servidores |
 
 ## Melhorias feitas a partir das medições

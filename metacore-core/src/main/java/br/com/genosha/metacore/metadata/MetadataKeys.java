@@ -32,6 +32,7 @@ public final class MetadataKeys {
 
   public static final String DOCUMENT_TITLE = "document.title";
   public static final String DOCUMENT_AUTHOR = "document.author";
+  public static final String DOCUMENT_LAST_MODIFIED_BY = "document.last_modified_by";
   public static final String DOCUMENT_SUBJECT = "document.subject";
   public static final String DOCUMENT_KEYWORDS = "document.keywords";
   public static final String DOCUMENT_CREATOR = "document.creator";

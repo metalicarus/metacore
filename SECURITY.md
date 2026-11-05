@@ -28,6 +28,10 @@ arquivo que reproduza o problema.
   DOCTYPE: entidades externas e expansão de entidades não são
   processadas. Testes provam isso nos três formatos.
 - Texto compactado do PNG é medido antes de ser descompactado.
+- Documentos Office: cada parte XML é descompactada só até
+  `maxDecompressedTextBytes` (zip bombs) e lida sem DTD; uma parte com
+  `DOCTYPE` é recusada (XXE e expansão de entidades). Testes provam os
+  três casos.
 - Parsers passam por testes de robustez e fuzzing com Jazzer.
 - A CLI troca caracteres de controle vindos dos metadados por escapes
   visíveis, para que um arquivo não controle o terminal, e protege o CSV

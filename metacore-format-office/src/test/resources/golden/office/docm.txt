@@ -1,0 +1,29 @@
+status: SUCCESS
+format: docx
+metadata:
+    - | ZIP | Entries | INTEGER | 6
+    - | ZIP | Uncompressed Size | INTEGER | 2843
+    - | OOXML | Content Type | TEXT | application/vnd.ms-word.document.macroEnabled.main+xml
+    - | OOXML | Macros | BOOLEAN | true
+  * document.title | OOXML:Core | dc:title | TEXT | Relatório anual
+  * document.subject | OOXML:Core | dc:subject | TEXT | Metadados
+  * document.author | OOXML:Core | dc:creator | TEXT | Genosha
+  * document.keywords | OOXML:Core | cp:keywords | LIST | [office, metadados, testes]
+    - | OOXML:Core | dc:description | TEXT | Arquivo de teste
+  * document.last_modified_by | OOXML:Core | cp:lastModifiedBy | TEXT | Revisor
+    - | OOXML:Core | cp:revision | TEXT | 7
+    - | OOXML:Core | cp:lastPrinted | OFFSET_DATE_TIME | 2026-07-20T10:00:00Z
+  * document.created | OOXML:Core | dcterms:created | OFFSET_DATE_TIME | 2026-07-14T16:32:05Z
+  * document.modified | OOXML:Core | dcterms:modified | OFFSET_DATE_TIME | 2026-08-01T09:00:00-03:00
+    - | OOXML:Core | cp:category | TEXT | Relatórios
+    - | OOXML:App | Template | TEXT | Normal.dotm
+    - | OOXML:App | TotalTime | INTEGER | 12
+  * document.page_count | OOXML:App | Pages | INTEGER | 3
+    - | OOXML:App | Words | INTEGER | 250
+    - | OOXML:App | Characters | INTEGER | 1400
+  * document.producer | OOXML:App | Application | TEXT | Microsoft Office Word
+    - | OOXML:App | DocSecurity | INTEGER | 0
+    - | OOXML:App | ScaleCrop | BOOLEAN | false
+    - | OOXML:App | Company | TEXT | Genosha
+    - | OOXML:App | AppVersion | TEXT | 16.0000
+warnings:

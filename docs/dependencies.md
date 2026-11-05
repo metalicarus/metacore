@@ -17,6 +17,9 @@ na base [OSV](https://osv.dev).
 | `com.fasterxml.jackson.core:jackson-*` | 2.22.4 | Apache 2.0 | cli |
 | `ch.qos.logback:logback-classic`, `logback-core` | 1.6.5 | EPL 1.0 ou LGPL 2.1 | cli |
 
+O módulo `metacore-format-office` não tem dependências além do core:
+ZIP e XML vêm do JDK (ADR 0018).
+
 Notas:
 
 - A biblioteca não embute dependências: cada JAR publicado só declara as

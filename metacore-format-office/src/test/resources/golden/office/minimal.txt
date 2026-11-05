@@ -1,0 +1,8 @@
+status: SUCCESS
+format: docx
+metadata:
+    - | ZIP | Entries | INTEGER | 3
+    - | ZIP | Uncompressed Size | INTEGER | 1194
+    - | OOXML | Content Type | TEXT | application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml
+    - | OOXML | Macros | BOOLEAN | false
+warnings:
