@@ -1,0 +1,23 @@
+status: SUCCESS
+format: pptx
+metadata:
+    - | ZIP | Entries | INTEGER | 5
+    - | ZIP | Uncompressed Size | INTEGER | 2708
+    - | OOXML | Content Type | TEXT | application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml
+    - | OOXML | Macros | BOOLEAN | false
+  * document.title | OOXML:Core | dc:title | TEXT | Relatório anual
+  * document.subject | OOXML:Core | dc:subject | TEXT | Metadados
+  * document.author | OOXML:Core | dc:creator | TEXT | Genosha
+  * document.keywords | OOXML:Core | cp:keywords | LIST | [office, metadados, testes]
+    - | OOXML:Core | dc:description | TEXT | Arquivo de teste
+  * document.last_modified_by | OOXML:Core | cp:lastModifiedBy | TEXT | Revisor
+    - | OOXML:Core | cp:revision | TEXT | 7
+    - | OOXML:Core | cp:lastPrinted | OFFSET_DATE_TIME | 2026-07-20T10:00:00Z
+  * document.created | OOXML:Core | dcterms:created | OFFSET_DATE_TIME | 2026-07-14T16:32:05Z
+  * document.modified | OOXML:Core | dcterms:modified | OFFSET_DATE_TIME | 2026-08-01T09:00:00-03:00
+    - | OOXML:Core | cp:category | TEXT | Relatórios
+  * document.producer | OOXML:App | Application | TEXT | Microsoft Office PowerPoint
+  * document.page_count | OOXML:App | Slides | INTEGER | 12
+    - | OOXML:App | Notes | INTEGER | 2
+    - | OOXML:App | HiddenSlides | INTEGER | 1
+warnings:

@@ -15,7 +15,8 @@ import java.util.Optional;
  * @param maxMetadataEntries número máximo de campos por resultado
  * @param maxValueLength tamanho máximo de um valor de texto, em caracteres
  * @param maxBinaryValueBytes tamanho máximo do conteúdo guardado de um valor binário
- * @param maxDecompressedTextBytes limite para texto compactado, como PNG {@code zTXt}
+ * @param maxDecompressedTextBytes limite para texto compactado, como PNG {@code zTXt} ou cada parte
+ *     XML de um pacote ZIP
  * @param maxAnalysisTime tempo máximo da análise, verificado de forma cooperativa
  */
 public record AnalysisLimits(

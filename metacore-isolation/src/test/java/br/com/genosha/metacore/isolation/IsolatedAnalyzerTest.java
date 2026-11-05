@@ -11,6 +11,7 @@ import br.com.genosha.metacore.exception.InputLimitExceededException;
 import br.com.genosha.metacore.exception.InvalidInputException;
 import br.com.genosha.metacore.format.image.fixtures.JpegFixtures;
 import br.com.genosha.metacore.format.image.fixtures.PngFixtures;
+import br.com.genosha.metacore.format.office.OfficeFixtures;
 import br.com.genosha.metacore.format.pdf.PdfFixtures;
 import br.com.genosha.metacore.metadata.IntegerValue;
 import br.com.genosha.metacore.metadata.Warning;
@@ -61,6 +62,10 @@ class IsolatedAnalyzerTest {
         Arguments.of("xmp.png", PngFixtures.withXmp()),
         Arguments.of("info.pdf", PdfFixtures.withInfo()),
         Arguments.of("xmp.pdf", PdfFixtures.pdf20InfoAndXmp()),
+        Arguments.of("props.docx", OfficeFixtures.docx()),
+        Arguments.of("sheets.xlsx", OfficeFixtures.xlsx()),
+        Arguments.of("lo.pptx", OfficeFixtures.libreOffice("metadados.pptx")),
+        Arguments.of("backup.zip", OfficeFixtures.plainZip()),
         Arguments.of("unknown.bin", new byte[] {1, 2, 3, 4}));
   }
 

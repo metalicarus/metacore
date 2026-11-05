@@ -16,6 +16,14 @@ incompatíveis, sempre registradas aqui.
   falta de memória ou queda da JVM do worker, `FAILED` com
   `WORKER_FAILED`. Streams continuam lidos sob demanda.
 - `FileInfo.of(name, size)` calcula a extensão a partir do nome.
+- Módulo `metacore-format-office` (ADR 0018): DOCX, XLSX e PPTX, com as
+  propriedades `core`, `app` e `custom`, o content type e a presença de
+  macros, além de ZIP genérico (entradas, tamanho, comentário). Leitor
+  próprio, sem Apache POI e sem dependências além do JDK. Arquivos
+  truncados são lidos pelos cabeçalhos locais.
+- Chave `document.last_modified_by`.
+- ZIP, JAR, EPUB e ODF deixam de sair como `UNKNOWN_FORMAT` e passam a
+  sair como `zip`.
 
 ### CLI
 
@@ -33,6 +41,7 @@ incompatíveis, sempre registradas aqui.
   (`--color`, `NO_COLOR`), resumo final e progresso ao gravar em
   arquivo. Caracteres de controle dos metadados viram escapes visíveis.
   A saída em texto nunca foi contrato; `-q` mantém o formato anterior.
+- Inclui o módulo Office: `metacore relatorio.docx`.
 - Ajuda agrupada por seções, erros de uso curtos com sugestões e
   `metacore completion` para bash e zsh.
 

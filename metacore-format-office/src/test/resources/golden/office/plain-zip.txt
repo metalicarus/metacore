@@ -1,0 +1,7 @@
+status: SUCCESS
+format: zip
+metadata:
+    - | ZIP | Entries | INTEGER | 2
+    - | ZIP | Uncompressed Size | INTEGER | 9
+    - | ZIP | Comment | TEXT | Backup de julho
+warnings:

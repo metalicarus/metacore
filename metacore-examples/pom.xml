@@ -41,6 +41,11 @@
     </dependency>
     <dependency>
       <groupId>br.com.genosha</groupId>
+      <artifactId>metacore-format-office</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>br.com.genosha</groupId>
       <artifactId>metacore-format-image</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>

@@ -4,7 +4,8 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** versão 0.1.0. Suporta JPEG, PNG e PDF. O plano completo
+> **Estado:** versão 0.1.0. Suporta JPEG, PNG, PDF, DOCX, XLSX, PPTX e
+> ZIP. O plano completo
 > está em [docs/blueprint.md](docs/blueprint.md).
 
 ## Quando usar o MetaCore (e quando usar o Tika)
@@ -12,7 +13,8 @@ comando.
 O MetaCore devolve metadados **tipados** (datas com fuso, frações,
 números), diz **de onde veio cada valor** e informa **o que deu errado**
 (`PARTIAL`, `TRUNCATED`, `ENCRYPTED`...) em vez de lançar exceção. Cobre
-poucos formatos (JPEG, PNG, PDF), com cerca de 5 MB de dependências.
+poucos formatos (JPEG, PNG, PDF, documentos Office e ZIP), com cerca de
+5 MB de dependências.
 
 O [Apache Tika](https://tika.apache.org) cobre centenas de formatos,
 extrai texto e detecta mais de mil tipos MIME. Se você precisa disso, use
@@ -45,6 +47,10 @@ Disponível no Maven Central:
   <dependency>
     <groupId>br.com.genosha</groupId>
     <artifactId>metacore-format-pdf</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>br.com.genosha</groupId>
+    <artifactId>metacore-format-office</artifactId>
   </dependency>
 </dependencies>
 ```
@@ -132,6 +138,7 @@ metacore-cli/target/dist/metacore/bin/metacore --help
 | `metacore-testkit` | Suíte de contrato para parsers (dependência de teste) | 21+ |
 | `metacore-format-image` | JPEG e PNG (metadata-extractor) | 21+ |
 | `metacore-format-pdf` | PDF (Apache PDFBox) | 21+ |
+| `metacore-format-office` | DOCX, XLSX, PPTX e ZIP, sem dependências além do JDK | 21+ |
 | `metacore-isolation` | Análise em processo separado, com prazo rígido e teto de memória | 21+ |
 | `metacore-cli` | Ferramenta `metacore` (picocli) | 25 |
 | `metacore-examples` | Exemplos de integração; não é publicado | 21+ |
@@ -161,7 +168,7 @@ Comandos úteis:
 |---|---|
 | `mvn spotless:apply` | Formata o código (google-java-format) |
 | `mvn -Psecurity verify` | Roda o OWASP Dependency-Check; defina `NVD_API_KEY` para acelerar |
-| `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s (`PngFuzzTest` para PNG; `-pl metacore-format-pdf` e `PdfFuzzTest` para PDF) |
+| `JAZZER_FUZZ=1 mvn test -pl metacore-format-image -am -Dtest=JpegFuzzTest -Dsurefire.failIfNoSpecifiedTests=false` | Fuzzing do parser JPEG por 60 s (`PngFuzzTest` para PNG; `-pl metacore-format-pdf` e `PdfFuzzTest` para PDF; `-pl metacore-format-office` e `OfficeFuzzTest` para Office e ZIP) |
 | `java -jar metacore-benchmarks/target/benchmarks.jar -prof gc` | Benchmarks (depois de `mvn package -pl metacore-benchmarks -am -DskipTests`) |
 
 O relatório de cobertura do JaCoCo fica em

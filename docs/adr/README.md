@@ -24,6 +24,7 @@ apontam um para o outro.
 | [0015](0015-stream-sob-demanda.md) | InputSource de stream sob demanda | Aceito |
 | [0016](0016-isolamento-em-processo.md) | Análise isolada em processo separado | Aceito |
 | [0017](0017-cli-pastas-csv-e-saida-em-texto.md) | CLI: pastas, CSV e saída em texto | Aceito |
+| [0018](0018-office-open-xml-sem-poi.md) | Office Open XML com leitor próprio, sem Apache POI | Aceito |
 
 ## Modelo
 
