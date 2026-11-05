@@ -5,7 +5,7 @@ O projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 Enquanto a versão for 0.x, versões minor podem trazer mudanças
 incompatíveis, sempre registradas aqui.
 
-## [Não publicado]
+## [0.2.0] - 2026-11-04
 
 ### Biblioteca
 
@@ -104,4 +104,5 @@ Primeira versão: core, CLI e os formatos JPEG, PNG e PDF.
 - Comparação reproduzível com o Apache Tika 4.1 (`metacore-comparison`,
   perfil `comparison`) e decisão registrada no ADR 0014.
 
+[0.2.0]: https://github.com/metalicarus/metacore/releases/tag/v0.2.0
 [0.1.0]: https://github.com/metalicarus/metacore/releases/tag/v0.1.0

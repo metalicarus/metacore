@@ -4,7 +4,7 @@ Biblioteca Java para identificar formatos de arquivo e extrair metadados
 com uma API uniforme e tipada, acompanhada de uma ferramenta de linha de
 comando.
 
-> **Estado:** versão 0.1.0. Suporta JPEG, PNG, PDF, DOCX, XLSX, PPTX e
+> **Estado:** versão 0.2.0. Suporta JPEG, PNG, PDF, DOCX, XLSX, PPTX e
 > ZIP. O plano completo
 > está em [docs/blueprint.md](docs/blueprint.md).
 
@@ -31,7 +31,7 @@ Disponível no Maven Central:
     <dependency>
       <groupId>br.com.genosha</groupId>
       <artifactId>metacore-bom</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
