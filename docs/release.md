@@ -111,11 +111,18 @@ git push origin main v0.1.0
   `metacore --version`.
 - Na 0.1.0, as duas tentativas do macOS ficaram sem runner (o GitHub
   desiste depois de 15 minutos na fila dos runners arm64) e o release saiu
-  só com os pacotes de Linux e Windows. O perfil `dist-mac` ainda não foi
-  testado.
+  só com os pacotes de Linux e Windows.
+- Na 0.2.0, o macOS falhou no jpackage: o `codesign` recusa arquivos soltos
+  em `Contents/` (`code object is not signed at all`, em
+  `Contents/LICENSE`), e o `--app-content` punha LICENSE e NOTICE ali. Desde
+  a 0.3.0, o perfil `dist-mac` dispensa o `--app-content` e copia os dois
+  arquivos para o `--input`, que vira `Contents/app`. A 0.1.0 e a 0.2.0
+  continuam sem pacote do macOS.
 - Se um sistema ficar sem pacote, rode o workflow `release` à mão
   (*Actions → release → Run workflow*) com a tag e o sistema: ele gera o
-  pacote a partir da tag e o anexa ao release, mesmo já publicado.
+  pacote a partir da tag e o anexa ao release, mesmo já publicado. O
+  disparo manual usa o código da tag: uma correção no build só vale para
+  tags criadas depois dela.
 - A versão do jpackage é a do projeto sem o qualificador (`0.2.0-SNAPSHOT`
   vira `0.2.0`), calculada pelo `build-helper-maven-plugin`.
 - O push da tag dispara um workflow; o token do GitHub usado no push
